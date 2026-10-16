@@ -4,12 +4,14 @@ import { MatTableModule } from '@angular/material/table';
 import { MatSortModule, Sort } from '@angular/material/sort';
 import { isInArray } from '../../../shared/utils/is-in-array';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { DatePipe } from '@angular/common';
 
 @Component({
   imports: [
     MatTableModule,
     MatSortModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    DatePipe
 ],
   selector: 'app-comments-table',
   styleUrl: './comments-table.scss',
