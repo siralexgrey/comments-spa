@@ -9,8 +9,10 @@
   [comments]="store.items()"
   [sortBy]="store.query().sortBy"
   [sortDir]="store.query().dir"
+  [page]="store.query().page"
+  [totalCount]="store.totalCount()"
+  [pageSize]="store.pageSize()"
   (sortChange)="store.setSort($event.sortBy, $event.dir)"
+  (pageChange)="store.setPage($event)"
 />
-{{ store.totalCount() }}
-<button matButton="filled" (click)="store.setPage(store.query().page + 1)">Next Page</button>
 

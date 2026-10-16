@@ -1,11 +1,11 @@
 <table
-mat-table
-[dataSource]="comments()"
-matSort
-matSortDisableClear
-[matSortActive]="sortBy()"
-[matSortDirection]="sortDir()"
-(matSortChange)="onSort($event)"
+  mat-table
+  [dataSource]="comments()"
+  matSort
+  matSortDisableClear
+  [matSortActive]="sortBy()"
+  [matSortDirection]="sortDir()"
+  (matSortChange)="onSort($event)"
 >
   <!-- User Name -->
   <ng-container matColumnDef="userName">
@@ -28,3 +28,12 @@ matSortDisableClear
   <tr mat-header-row *matHeaderRowDef="columns"></tr>
   <tr mat-row *matRowDef="let row; columns: columns"></tr>
 </table>
+<mat-paginator
+  [length]="totalCount()"
+  [pageSize]="pageSize()"
+  [pageIndex]="page() - 1"
+  (page)="onPageChange($event)"
+  [hidePageSize]="true"
+  showFirstLastButtons
+  aria-label="Comments pages"
+/>

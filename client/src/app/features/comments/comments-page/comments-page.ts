@@ -1,12 +1,10 @@
 import { Component, inject } from '@angular/core';
 import { CommentsStore } from '../data-access/comments-store';
-import { MatButton } from '@angular/material/button';
 import { CommentsTable } from '../comments-table/comments-table';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 @Component({
   imports: [
-    MatButton,
     MatProgressBarModule,
     CommentsTable,
   ],

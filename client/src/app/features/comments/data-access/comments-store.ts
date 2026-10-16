@@ -23,6 +23,7 @@ export class CommentsStore {
 
   readonly items = computed(() => this.lastResponse()?.items ?? []);
   readonly totalCount = computed(() => this.lastResponse()?.totalCount ?? 0);
+  readonly pageSize = computed(() => this.lastResponse()?.pageSize ?? 25);
   readonly isLoading = this.comments.isLoading;
   readonly error = this.comments.error;
 
