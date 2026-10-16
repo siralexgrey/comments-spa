@@ -1,6 +1,6 @@
 @if (replies().length) {
   <button
-    matButton
+    class="text-sm text-(--mat-sys-primary) hover:underline cursor-pointer mb-3"
     [attr.aria-expanded]="expanded()"
     (click)="expanded.update(v => !v)"
   >
@@ -14,10 +14,27 @@
 @if (expanded()) {
   <div class="ml-6 border-l pl-4">
     @for (reply of replies(); track reply.id) {
-      <div class="header">
-        {{reply.userName}} {{reply.email}} {{reply.createdAt | date: 'dd.MM.yyyy HH:mm' }}
+      <div class="mb-3">
+        <div
+          class="flex flex-wrap items-center gap-3 rounded px-3 py-2 bg-(--mat-sys-surface-container)"
+        >
+          <app-comment-author
+            [userName]="reply.userName"
+            [homePage]="reply.homePage"
+          />
+          <span
+            class="text-sm text-(--mat-sys-on-surface-variant)"
+          >
+            {{ reply.email }}
+          </span>
+          <span
+            class="text-sm text-(--mat-sys-on-surface-variant)"
+          >
+            {{ reply.createdAt | date: dateFormat }}
+          </span>
+        </div>
+        <div [innerHTML]="reply.text" class="mt-2"></div>
       </div>
-      <div [innerHTML]="reply.text"></div>
       <app-comment-replies [replies]="reply.replies" />
     }
   </div>

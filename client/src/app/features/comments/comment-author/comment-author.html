@@ -1,0 +1,6 @@
+@if (homePage(); as url) {
+  <a [href]="url" target="_blank" rel="noopener noreferrer" class="font-semibold">{{ userName() }}</a>
+}
+@else {
+  <span class="font-semibold">{{ userName() }}</span>
+}

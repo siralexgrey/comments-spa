@@ -6,6 +6,8 @@ import { isInArray } from '../../../shared/utils/is-in-array';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { DatePipe } from '@angular/common';
 import { CommentReplies } from '../comment-replies/comment-replies';
+import { DATE_FORMAT } from '../../../shared/utils/date-format';
+import { CommentAuthor } from '../comment-author/comment-author';
 
 @Component({
   imports: [
@@ -13,7 +15,8 @@ import { CommentReplies } from '../comment-replies/comment-replies';
     MatSortModule,
     MatPaginatorModule,
     DatePipe,
-    CommentReplies
+    CommentReplies,
+    CommentAuthor
 ],
   selector: 'app-comments-table',
   styleUrl: './comments-table.scss',
@@ -30,6 +33,7 @@ export class CommentsTable {
   readonly pageChange = output<number>();
 
   protected readonly columns = ['userName', 'email', 'createdAt'] as const;
+  protected readonly dateFormat = DATE_FORMAT;
 
   onSort(sort: Sort) {
     if(!isInArray(sort.active, SORT_BY) || !isInArray(sort.direction, DIR)) {

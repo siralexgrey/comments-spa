@@ -1,19 +1,20 @@
 import { Component, input, signal } from '@angular/core';
 import { CommentDto } from '../../../core/models/comment.models';
-import { MatButton } from '@angular/material/button';
 import { DatePipe } from '@angular/common';
+import { DATE_FORMAT } from '../../../shared/utils/date-format';
+import { CommentAuthor } from '../comment-author/comment-author';
 
 @Component({
   imports: [
-    MatButton,
-    DatePipe
-  ],
+    DatePipe,
+    CommentAuthor
+],
   selector: 'app-comment-replies',
-  styleUrl: './comment-replies.scss',
   templateUrl: './comment-replies.html',
 })
 export class CommentReplies {
   readonly replies = input.required<CommentDto[]>();
 
   protected readonly expanded = signal(false);
+  protected readonly dateFormat = DATE_FORMAT;
 }
