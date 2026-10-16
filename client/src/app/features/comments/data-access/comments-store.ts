@@ -1,7 +1,8 @@
-import { computed, inject, Service, signal } from "@angular/core";
-import { GetCommentsQuery, SortBy, SortDir } from "../../../core/models/comment.models";
+import { computed, inject, linkedSignal, Service, signal } from "@angular/core";
+import { CommentDto, GetCommentsQuery, SortBy, SortDir } from "../../../core/models/comment.models";
 import { CommentsApi } from "../../../core/api/comments-api";
 import { rxResource } from "@angular/core/rxjs-interop";
+import { PagedResponse } from "../../../core/models/api.models";
 
 @Service()
 export class CommentsStore {
@@ -15,8 +16,13 @@ export class CommentsStore {
     stream: ({ params }) => this.api.getComments(params),
   });
 
-  readonly items = computed(() => (this.comments.hasValue() ? this.comments.value().items : []));
-  readonly totalCount = computed(() => (this.comments.hasValue() ? this.comments.value().totalCount : 0));
+  private readonly lastResponse = linkedSignal<PagedResponse<CommentDto> | undefined, PagedResponse<CommentDto> | undefined>({
+    source: () => this.comments.hasValue() ? this.comments.value() : undefined,
+    computation: (next, previous) => next ?? previous?.value
+  });
+
+  readonly items = computed(() => this.lastResponse()?.items ?? []);
+  readonly totalCount = computed(() => this.lastResponse()?.totalCount ?? 0);
   readonly isLoading = this.comments.isLoading;
   readonly error = this.comments.error;
 

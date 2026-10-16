@@ -2,7 +2,7 @@ import { HttpErrorResponse, HttpInterceptorFn, HttpResponse } from "@angular/com
 import { delay, of, throwError } from "rxjs";
 import { createSeed } from "./mock-data";
 import { getCommentsPage } from "./comments-mock";
-import { SortBy, SortDir } from "../models/comment.models";
+import { DIR, SORT_BY, SortBy, SortDir } from "../models/comment.models";
 import { CaptchaDto } from "../models/captcha.models";
 import { isInArray } from '../../shared/utils/is-in-array';
 import { ProblemDetails } from "../models/api.models";
@@ -12,8 +12,6 @@ export const MOCK_CAPTCHA_CODE = 'ABC12';
 const db = createSeed();
 const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="120" height="40"><text x="10" y="28" font-size="24">${MOCK_CAPTCHA_CODE}</text></svg>`;
 const imageDataUrl = 'data:image/svg+xml,' + encodeURIComponent(svg);
-const SORT_BY: SortBy[] = ['createdAt', 'userName', 'email'];
-const DIR: SortDir[] = ['asc', 'desc'];
 
 export const mockApiInterceptor: HttpInterceptorFn = (req, next) => {
   if (req.method === 'GET' && req.url === '/api/comments') {

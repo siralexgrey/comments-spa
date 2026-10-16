@@ -1,0 +1,16 @@
+@if(store.isLoading()) {
+  <mat-progress-bar mode="indeterminate" />
+}
+@if(store.error(); as error) {
+  {{ error.message }}
+}
+<app-comments-table
+  [class.opacity-50]="store.isLoading()"
+  [comments]="store.items()"
+  [sortBy]="store.query().sortBy"
+  [sortDir]="store.query().dir"
+  (sortChange)="store.setSort($event.sortBy, $event.dir)"
+/>
+{{ store.totalCount() }}
+<button matButton="filled" (click)="store.setPage(store.query().page + 1)">Next Page</button>
+
