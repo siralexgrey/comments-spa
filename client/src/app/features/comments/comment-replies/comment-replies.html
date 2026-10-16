@@ -1,0 +1,24 @@
+@if (replies().length) {
+  <button
+    matButton
+    [attr.aria-expanded]="expanded()"
+    (click)="expanded.update(v => !v)"
+  >
+    {{
+      expanded()
+        ? 'Hide replies'
+        : 'Show ' + replies().length + ' replies'
+    }}
+  </button>
+}
+@if (expanded()) {
+  <div class="ml-6 border-l pl-4">
+    @for (reply of replies(); track reply.id) {
+      <div class="header">
+        {{reply.userName}} {{reply.email}} {{reply.createdAt | date: 'dd.MM.yyyy HH:mm' }}
+      </div>
+      <div [innerHTML]="reply.text"></div>
+      <app-comment-replies [replies]="reply.replies" />
+    }
+  </div>
+}

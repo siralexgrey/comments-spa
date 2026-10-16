@@ -1,17 +1,19 @@
-import { Component, input, output, signal } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { CommentDto, DIR, GetCommentsQuery, SORT_BY, SortBy, SortDir } from '../../../core/models/comment.models';
 import { MatTableModule } from '@angular/material/table';
 import { MatSortModule, Sort } from '@angular/material/sort';
 import { isInArray } from '../../../shared/utils/is-in-array';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { DatePipe } from '@angular/common';
+import { CommentReplies } from '../comment-replies/comment-replies';
 
 @Component({
   imports: [
     MatTableModule,
     MatSortModule,
     MatPaginatorModule,
-    DatePipe
+    DatePipe,
+    CommentReplies
 ],
   selector: 'app-comments-table',
   styleUrl: './comments-table.scss',
@@ -29,8 +31,6 @@ export class CommentsTable {
 
   protected readonly columns = ['userName', 'email', 'createdAt'] as const;
 
-  protected readonly expandedId = signal<number | null>(null);
-
   onSort(sort: Sort) {
     if(!isInArray(sort.active, SORT_BY) || !isInArray(sort.direction, DIR)) {
       return;
@@ -40,9 +40,5 @@ export class CommentsTable {
 
   onPageChange(pageEvent: PageEvent) {
     this.pageChange.emit(pageEvent.pageIndex + 1)
-  }
-
-  toggle(id: number) {
-    this.expandedId.update(v => v === id ? null : id);
   }
 }
