@@ -47,6 +47,12 @@
     @if (form.controls.text.hasError('forbiddenTag')) {
       <mat-error>Forbidden tag: &lt;{{ form.controls.text.getError('forbiddenTag').tag}}&gt;</mat-error>
     }
+    @if (form.controls.text.hasError('forbiddenAttr')) {
+      <mat-error>Forbidden attribute: {{ form.controls.text.getError('forbiddenAttr').attr }} in {{ form.controls.text.getError('forbiddenAttr').tag }}</mat-error>
+    }
+    @if (form.controls.text.hasError('invalidHref')) {
+      <mat-error>Link must start with http:// or https://</mat-error>
+    }
   </mat-form-field>
   <mat-form-field>
     <mat-label>Captcha</mat-label>

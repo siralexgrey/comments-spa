@@ -5,12 +5,15 @@ const ALLOWED_PROTOCOL = ['http:', 'https:'];
 export const httpUrlValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
   const value = control.value as string;
   if (!value) return null;
+  return isHttpUrl(value) ? null : { httpUrl: true };
+}
 
+export function isHttpUrl(value: string): boolean {
   try {
     const url = new URL(value);
-    return ALLOWED_PROTOCOL.includes(url.protocol) ? null : { httpUrl: true };
+    return ALLOWED_PROTOCOL.includes(url.protocol);
   }
   catch {
-    return { httpUrl: true };
+    return false;
   }
 }
