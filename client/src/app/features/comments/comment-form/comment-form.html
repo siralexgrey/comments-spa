@@ -63,5 +63,5 @@
       <mat-error>Captcha is required</mat-error>
     }
   </mat-form-field>
-  <button matButton="filled">Send</button>
+  <button matButton="filled" [disabled]="!captcha.hasValue()">Send</button>
 </form>

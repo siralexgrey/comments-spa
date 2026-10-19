@@ -1,6 +1,6 @@
-import { Component, inject, input, output } from '@angular/core';
-import { CreateCommentDto } from '../../../core/models/comment.models';
-import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, inject, input, output, viewChild } from '@angular/core';
+import { CommentDto, CreateCommentDto } from '../../../core/models/comment.models';
+import { FormGroupDirective, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButton, MatIconButton } from '@angular/material/button';
@@ -9,6 +9,7 @@ import { allowedHtmlValidator } from '../../../shared/validators/allowed-html.va
 import { CaptchaApi } from '../../../core/api/captcha-api';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { MatIconModule } from '@angular/material/icon';
+import { CommentsStore } from '../data-access/comments-store';
 
 @Component({
   imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButton, MatIconButton, MatIconModule],
@@ -19,9 +20,12 @@ import { MatIconModule } from '@angular/material/icon';
 export class CommentForm {
   private fb = inject(NonNullableFormBuilder);
   private captchaApi = inject(CaptchaApi);
+  private store = inject(CommentsStore);
+
+  private formDir = viewChild.required(FormGroupDirective);
 
   readonly parentId = input<number>();
-  readonly submitted = output<CreateCommentDto>();
+  readonly submitted = output<CommentDto>();
 
   readonly captcha = rxResource({
     stream: () => this.captchaApi.getCaptcha()
@@ -60,6 +64,17 @@ export class CommentForm {
     if (this.parentId()) {
       createCommentDto.parentId = this.parentId();
     }
-    this.submitted.emit(createCommentDto);
+    this.store.createComment(createCommentDto)
+      .subscribe({
+        next: (value) => {
+          this.formDir().resetForm();
+          this.captcha.reload();
+          this.submitted.emit(value);
+        },
+        error: () => {
+          this.captcha.reload();
+          this.form.controls.captchaCode.reset();
+        },
+      })
   }
 }
