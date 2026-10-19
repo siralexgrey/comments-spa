@@ -3,21 +3,29 @@ import { CreateCommentDto } from '../../../core/models/comment.models';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatButton } from '@angular/material/button';
+import { MatButton, MatIconButton } from '@angular/material/button';
 import { httpUrlValidator } from '../../../shared/validators/http-url.validator';
 import { allowedHtmlValidator } from '../../../shared/validators/allowed-html.validator';
+import { CaptchaApi } from '../../../core/api/captcha-api';
+import { rxResource } from '@angular/core/rxjs-interop';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
-  imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButton],
+  imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButton, MatIconButton, MatIconModule],
   selector: 'app-comment-form',
   styleUrl: './comment-form.scss',
   templateUrl: './comment-form.html',
 })
 export class CommentForm {
   private fb = inject(NonNullableFormBuilder);
+  private captchaApi = inject(CaptchaApi);
 
   readonly parentId = input<number>();
   readonly submitted = output<CreateCommentDto>();
+
+  readonly captcha = rxResource({
+    stream: () => this.captchaApi.getCaptcha()
+  })
 
   form = this.fb.group({
     userName:['', [Validators.required, Validators.maxLength(50), Validators.pattern(/^[a-zA-Z0-9]+$/)]],
@@ -28,6 +36,10 @@ export class CommentForm {
   });
 
   submit() {
+    const captcha = this.captcha.value();
+    if (!captcha) {
+      return;
+    }
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
@@ -39,7 +51,7 @@ export class CommentForm {
       email: formValue.email,
       text: formValue.text,
       captchaCode: formValue.captchaCode,
-      captchaId: '123ABC'
+      captchaId: captcha.id
     }
 
     if (formValue.homePage.length) {

@@ -4,6 +4,7 @@
 @if(store.error(); as error) {
   {{ error.message }}
 }
+<app-comment-form />
 <app-comments-table
   [class.opacity-50]="store.isLoading()"
   [comments]="store.items()"
