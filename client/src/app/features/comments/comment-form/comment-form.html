@@ -1,0 +1,50 @@
+<form [formGroup]="form" (ngSubmit)="submit()">
+  <mat-form-field>
+    <mat-label>User Name</mat-label>
+    <input matInput formControlName="userName" />
+    @if (form.controls.userName.hasError('required')) {
+      <mat-error>User name is required</mat-error>
+    }
+    @if (form.controls.userName.hasError('maxlength')) {
+      <mat-error>User name max length is 50 characters</mat-error>
+    }
+    @if (form.controls.userName.hasError('pattern')) {
+      <mat-error>User name should only contain latin letters and numbers</mat-error>
+    }
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Email</mat-label>
+    <input matInput formControlName="email" />
+    @if (form.controls.email.hasError('required')) {
+      <mat-error>Email is required</mat-error>
+    }
+    @if (form.controls.email.hasError('email')) {
+      <mat-error>Email is not valid</mat-error>
+    }
+    @if (form.controls.email.hasError('maxlength')) {
+      <mat-error>Email max length is 254 characters</mat-error>
+    }
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Home page</mat-label>
+    <input matInput formControlName="homePage" />
+    @if (form.controls.homePage.hasError('maxlength')) {
+      <mat-error>Email max length is 2048 characters</mat-error>
+    }
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Text</mat-label>
+    <textarea matInput formControlName="text"></textarea>
+    @if (form.controls.text.hasError('required')) {
+      <mat-error>Comment text is Required</mat-error>
+    }
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Captcha</mat-label>
+    <input matInput formControlName="captchaCode" />
+    @if (form.controls.captchaCode.hasError('required')) {
+      <mat-error>Captcha is required</mat-error>
+    }
+  </mat-form-field>
+  <button matButton="filled">Send</button>
+</form>
