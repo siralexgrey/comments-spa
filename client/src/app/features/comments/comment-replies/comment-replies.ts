@@ -3,11 +3,13 @@ import { CommentDto } from '../../../core/models/comment.models';
 import { DatePipe } from '@angular/common';
 import { DATE_FORMAT } from '../../../shared/utils/date-format';
 import { CommentAuthor } from '../comment-author/comment-author';
+import { CommentReplyAction } from '../comment-reply-action/comment-reply-action';
 
 @Component({
   imports: [
     DatePipe,
-    CommentAuthor
+    CommentAuthor,
+    CommentReplyAction
 ],
   selector: 'app-comment-replies',
   templateUrl: './comment-replies.html',

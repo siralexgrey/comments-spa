@@ -1,0 +1,13 @@
+<button
+  type="button"
+  class="text-sm text-(--mat-sys-primary) hover:underline cursor-pointer mb-3"
+  (click)="toggle()"
+>
+  {{ isActive() ? 'Cancel' : 'Reply' }}
+</button>
+@if (isActive()) {
+  <app-comment-form
+    [parentId]="commentId()"
+    (submitted)="store.setReplyingToId(null)"
+  />
+}

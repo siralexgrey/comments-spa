@@ -12,6 +12,9 @@ export class CommentsStore {
   private readonly _query = signal<GetCommentsQuery>({ page: 1, sortBy: 'createdAt', dir: 'desc' });
   readonly query = this._query.asReadonly();
 
+  private readonly _replyingToId = signal<number | null>(null);
+  readonly replyingToId = this._replyingToId.asReadonly();
+
   private readonly comments = rxResource({
     params: () => this._query(),
     stream: ({ params }) => this.api.getComments(params),
@@ -34,6 +37,10 @@ export class CommentsStore {
 
   setSort(sortBy: SortBy, dir: SortDir) {
     this._query.update(q => ({ ...q, sortBy, dir, page: 1 }));
+  }
+
+  setReplyingToId(id: number | null) {
+    this._replyingToId.set(id);
   }
 
   createComment(dto: CreateCommentDto) {

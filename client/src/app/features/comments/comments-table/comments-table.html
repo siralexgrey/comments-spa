@@ -1,11 +1,12 @@
 <table
   mat-table
-  [dataSource]="comments()"
   matSort
   matSortDisableClear
   multiTemplateDataRows
+  [dataSource]="comments()"
   [matSortActive]="sortBy()"
   [matSortDirection]="sortDir()"
+  [trackBy]="trackById"
   (matSortChange)="onSort($event)"
 >
   <!-- User Name -->
@@ -35,6 +36,7 @@
   <ng-container matColumnDef="detail">
     <td mat-cell *matCellDef="let c" [attr.colspan]="columns.length">
       <div [innerHTML]="c.text"></div>
+      <app-comment-reply-action [commentId]="c.id" />
       <app-comment-replies [replies]="c.replies" />
     </td>
   </ng-container>

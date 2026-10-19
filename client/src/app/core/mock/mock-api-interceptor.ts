@@ -33,7 +33,7 @@ export const mockApiInterceptor: HttpInterceptorFn = (req, next) => {
       return badRequest(errors, req.url);
     }
     const query = {page, sortBy: sortBy as SortBy, dir: dir as SortDir};
-    return of(new HttpResponse({ status: 200, body: getCommentsPage(db, query) })).pipe(delay(400));
+    return of(new HttpResponse({ status: 200, body: structuredClone(getCommentsPage(db, query)) })).pipe(delay(400));
   }
   if (req.method === 'POST' && req.url === '/api/comments') {
     const url = req.url;

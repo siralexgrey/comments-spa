@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { Component, input, output, TrackByFunction } from '@angular/core';
 import { CommentDto, DIR, GetCommentsQuery, SORT_BY, SortBy, SortDir } from '../../../core/models/comment.models';
 import { MatTableModule } from '@angular/material/table';
 import { MatSortModule, Sort } from '@angular/material/sort';
@@ -8,6 +8,7 @@ import { DatePipe } from '@angular/common';
 import { CommentReplies } from '../comment-replies/comment-replies';
 import { DATE_FORMAT } from '../../../shared/utils/date-format';
 import { CommentAuthor } from '../comment-author/comment-author';
+import { CommentReplyAction } from '../comment-reply-action/comment-reply-action';
 
 @Component({
   imports: [
@@ -16,7 +17,8 @@ import { CommentAuthor } from '../comment-author/comment-author';
     MatPaginatorModule,
     DatePipe,
     CommentReplies,
-    CommentAuthor
+    CommentAuthor,
+    CommentReplyAction
 ],
   selector: 'app-comments-table',
   styleUrl: './comments-table.scss',
@@ -34,6 +36,10 @@ export class CommentsTable {
 
   protected readonly columns = ['userName', 'email', 'createdAt'] as const;
   protected readonly dateFormat = DATE_FORMAT;
+
+  protected readonly trackById: TrackByFunction<CommentDto> = (_, item: CommentDto): number => {
+    return item.id;
+  }
 
   onSort(sort: Sort) {
     if(!isInArray(sort.active, SORT_BY) || !isInArray(sort.direction, DIR)) {
