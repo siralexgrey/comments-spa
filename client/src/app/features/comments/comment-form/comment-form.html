@@ -41,6 +41,12 @@
     @if (form.controls.text.hasError('required')) {
       <mat-error>Comment text is Required</mat-error>
     }
+    @if (form.controls.text.hasError('invalidXhtml')) {
+      <mat-error>Invalid XHTML</mat-error>
+    }
+    @if (form.controls.text.hasError('forbiddenTag')) {
+      <mat-error>Forbidden tag: &lt;{{ form.controls.text.getError('forbiddenTag').tag}}&gt;</mat-error>
+    }
   </mat-form-field>
   <mat-form-field>
     <mat-label>Captcha</mat-label>
