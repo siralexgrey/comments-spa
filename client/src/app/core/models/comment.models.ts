@@ -36,5 +36,7 @@ export interface AttachmentDto {
 }
 
 export type AttachmentType = 'text' | 'image'
-export type SortBy = 'createdAt' | 'userName' | 'email'
-export type SortDir = 'asc' | 'desc'
+export const SORT_BY = ['createdAt', 'userName', 'email'] as const;
+export type SortBy = (typeof SORT_BY)[number];
+export const DIR = ['asc', 'desc'] as const;
+export type SortDir = (typeof DIR)[number];

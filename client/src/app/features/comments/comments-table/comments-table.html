@@ -1,0 +1,60 @@
+<table
+  mat-table
+  [dataSource]="comments()"
+  matSort
+  matSortDisableClear
+  multiTemplateDataRows
+  [matSortActive]="sortBy()"
+  [matSortDirection]="sortDir()"
+  (matSortChange)="onSort($event)"
+>
+  <!-- User Name -->
+  <ng-container matColumnDef="userName">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+    <td mat-cell *matCellDef="let c">
+      <app-comment-author
+        [userName]="c.userName"
+        [homePage]="c.homePage"
+      />
+    </td>
+  </ng-container>
+
+  <!-- Email -->
+  <ng-container matColumnDef="email">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>Email</th>
+    <td mat-cell *matCellDef="let c">{{ c.email }}</td>
+  </ng-container>
+
+  <!-- createdAt -->
+  <ng-container matColumnDef="createdAt">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>Created at</th>
+    <td mat-cell *matCellDef="let c">{{ c.createdAt | date: dateFormat }}</td>
+  </ng-container>
+
+  <!-- detail -->
+  <ng-container matColumnDef="detail">
+    <td mat-cell *matCellDef="let c" [attr.colspan]="columns.length">
+      <div [innerHTML]="c.text"></div>
+      <app-comment-replies [replies]="c.replies" />
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="columns"></tr>
+  <tr
+    mat-row
+    *matRowDef="let row; columns: columns"
+  ></tr>
+  <tr
+    mat-row
+    *matRowDef="let row; columns: ['detail']"
+  ></tr>
+</table>
+<mat-paginator
+  [length]="totalCount()"
+  [pageSize]="pageSize()"
+  [pageIndex]="page() - 1"
+  (page)="onPageChange($event)"
+  [hidePageSize]="true"
+  showFirstLastButtons
+  aria-label="Comments pages"
+/>

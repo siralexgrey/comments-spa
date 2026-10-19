@@ -1,0 +1,18 @@
+@if(store.isLoading()) {
+  <mat-progress-bar mode="indeterminate" />
+}
+@if(store.error(); as error) {
+  {{ error.message }}
+}
+<app-comments-table
+  [class.opacity-50]="store.isLoading()"
+  [comments]="store.items()"
+  [sortBy]="store.query().sortBy"
+  [sortDir]="store.query().dir"
+  [page]="store.query().page"
+  [totalCount]="store.totalCount()"
+  [pageSize]="store.pageSize()"
+  (sortChange)="store.setSort($event.sortBy, $event.dir)"
+  (pageChange)="store.setPage($event)"
+/>
+
