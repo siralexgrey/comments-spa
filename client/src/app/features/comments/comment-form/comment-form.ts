@@ -4,6 +4,7 @@ import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angula
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButton } from '@angular/material/button';
+import { httpUrlValidator } from '../../../shared/validators/http-url.validator';
 
 @Component({
   imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButton],
@@ -20,7 +21,7 @@ export class CommentForm {
   form = this.fb.group({
     userName:['', [Validators.required, Validators.maxLength(50), Validators.pattern(/^[a-zA-Z0-9]+$/)]],
     email:['', [Validators.required, Validators.email, Validators.maxLength(254)]],
-    homePage:['', Validators.maxLength(2048)],
+    homePage:['', [ Validators.maxLength(2048), httpUrlValidator]],
     text: ['', [Validators.required, Validators.maxLength(5000)]],
     captchaCode: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9]+$/)]],
   });

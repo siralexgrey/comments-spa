@@ -29,7 +29,10 @@
     <mat-label>Home page</mat-label>
     <input matInput formControlName="homePage" />
     @if (form.controls.homePage.hasError('maxlength')) {
-      <mat-error>Email max length is 2048 characters</mat-error>
+      <mat-error>Home page max length is 2048 characters</mat-error>
+    }
+    @if (form.controls.homePage.hasError('httpUrl')) {
+      <mat-error>Home page is invalid</mat-error>
     }
   </mat-form-field>
   <mat-form-field>
