@@ -62,5 +62,15 @@
       <mat-error>Captcha is required</mat-error>
     }
   </mat-form-field>
+  <button matButton type="button" (click)="showPreview()">Preview</button>
   <button matButton="filled" [disabled]="!captcha.hasValue()">Send</button>
 </form>
+@if(preview.isLoading()) {
+  <mat-progress-bar></mat-progress-bar>
+}
+@if(preview.hasValue()) {
+  <div [innerHTML]="preview.value()"></div>
+}
+@if(preview.error()) {
+  <p>Preview failed</p>
+}

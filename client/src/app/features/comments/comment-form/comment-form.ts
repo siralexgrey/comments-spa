@@ -1,4 +1,4 @@
-import { Component, inject, input, output, viewChild } from '@angular/core';
+import { Component, inject, input, output, signal, viewChild } from '@angular/core';
 import { CommentDto, CreateCommentDto } from '../../../core/models/comment.models';
 import { FormGroupDirective, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -12,15 +12,20 @@ import { MatIconModule } from '@angular/material/icon';
 import { CommentsStore } from '../data-access/comments-store';
 import { MarkupEditor } from '../markup-editor/markup-editor';
 import { ErrorStateMatcher } from '@angular/material/core';
+import { CommentsApi } from '../../../core/api/comments-api';
+import { map } from 'rxjs';
+import { PreviewResponse } from '../../../core/models/preview.models';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 @Component({
-  imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButton, MatIconButton, MatIconModule, MarkupEditor],
+  imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButton, MatIconButton, MatIconModule, MarkupEditor, MatProgressBarModule],
   selector: 'app-comment-form',
   styleUrl: './comment-form.scss',
   templateUrl: './comment-form.html',
 })
 export class CommentForm {
   private readonly fb = inject(NonNullableFormBuilder);
+  private readonly commentsApi = inject(CommentsApi);
   private readonly captchaApi = inject(CaptchaApi);
   private readonly store = inject(CommentsStore);
 
@@ -31,8 +36,15 @@ export class CommentForm {
   readonly parentId = input<number>();
   readonly submitted = output<CommentDto>();
 
+  private readonly previewText = signal<string | undefined>(undefined);
+
   readonly captcha = rxResource({
     stream: () => this.captchaApi.getCaptcha()
+  })
+
+  protected readonly preview = rxResource({
+    params: () => this.previewText(),
+    stream: ({ params }) => this.commentsApi.preview(params).pipe(map((value: PreviewResponse) => value.html))
   })
 
   form = this.fb.group({
@@ -73,6 +85,7 @@ export class CommentForm {
         next: (value) => {
           this.formDir().resetForm();
           this.captcha.reload();
+          this.previewText.set(undefined);
           this.submitted.emit(value);
         },
         error: () => {
@@ -80,5 +93,15 @@ export class CommentForm {
           this.form.controls.captchaCode.reset();
         },
       })
+  }
+
+  showPreview() {
+    if (this.form.controls.text.invalid) {
+      this.form.controls.text.markAsTouched();
+      this.previewText.set(undefined);
+      return;
+    }
+
+    this.previewText.set(this.form.controls.text.getRawValue());
   }
 }

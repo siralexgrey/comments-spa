@@ -12,6 +12,10 @@ export const allowedHtmlValidator: ValidatorFn = (control: AbstractControl): Val
   const value = control.value as string;
   if (!value) return null;
 
+  return checkAllowedHtml(value);
+}
+
+export function checkAllowedHtml(value: string): ValidationErrors | null {
   const xml = `<root>${value}</root>`;
   const doc = new DOMParser().parseFromString(xml, 'application/xml');
   if (doc.querySelector('parsererror')) {

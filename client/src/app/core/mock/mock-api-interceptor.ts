@@ -6,6 +6,8 @@ import { CommentDto, DIR, SORT_BY, SortBy, SortDir } from "../models/comment.mod
 import { CaptchaDto } from "../models/captcha.models";
 import { isInArray } from '../../shared/utils/is-in-array';
 import { ProblemDetails } from "../models/api.models";
+import { checkAllowedHtml } from "../../shared/validators/allowed-html.validator";
+import { PreviewRequest, PreviewResponse } from "../models/preview.models";
 
 export const MOCK_CAPTCHA_CODE = 'ABC12';
 
@@ -15,7 +17,8 @@ const imageDataUrl = 'data:image/svg+xml,' + encodeURIComponent(svg);
 let nextId = 5000;
 
 export const mockApiInterceptor: HttpInterceptorFn = (req, next) => {
-  if (req.method === 'GET' && req.url === '/api/comments') {
+  const url = req.url;
+  if (req.method === 'GET' && url === '/api/comments') {
     const errors: Record<string, string[]> = {};
     const page = Number(req.params.get('page') || 1);
     const sortBy = req.params.get('sortBy') ?? 'createdAt';
@@ -30,13 +33,12 @@ export const mockApiInterceptor: HttpInterceptorFn = (req, next) => {
       errors['dir'] = ['Invalid dir'];
     }
     if (Object.keys(errors).length > 0) {
-      return badRequest(errors, req.url);
+      return badRequest(errors, url);
     }
     const query = {page, sortBy: sortBy as SortBy, dir: dir as SortDir};
     return of(new HttpResponse({ status: 200, body: structuredClone(getCommentsPage(db, query)) })).pipe(delay(400));
   }
-  if (req.method === 'POST' && req.url === '/api/comments') {
-    const url = req.url;
+  if (req.method === 'POST' && url === '/api/comments') {
     const form = req.body as FormData;
     const userName = form.get('userName') as string;
     const email = form.get('email') as string;
@@ -74,7 +76,17 @@ export const mockApiInterceptor: HttpInterceptorFn = (req, next) => {
     nextId++;
     return of(new HttpResponse({ status: 201, body: commentDto })).pipe(delay(400));
   }
-  if (req.method === 'GET' && req.url === '/api/captcha') {
+  if (req.method === 'POST' && url === '/api/comments/preview') {
+    const body = req.body as PreviewRequest;
+    const text = body.text;
+    const errors = checkAllowedHtml(text);
+    if (errors) {
+      return badRequest({text: ['Invalid XHTML']}, url);
+    }
+    return of(new HttpResponse({ status: 200, body: { html: text } satisfies PreviewResponse })).pipe(delay(400));
+
+  }
+  if (req.method === 'GET' && url === '/api/captcha') {
     return of(new HttpResponse({ status: 200, body: {id: '12223adsdf', imageDataUrl } satisfies CaptchaDto })).pipe(delay(400));
   }
   return next(req);
