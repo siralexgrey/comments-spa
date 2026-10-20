@@ -1,7 +1,10 @@
 import { afterNextRender, Component, ElementRef, forwardRef, inject, Injector, signal, viewChild } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatIconButton } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
+import { LinkDialog, LinkDialogResult } from '../link-dialog/link-dialog';
+import { escapeXmlAttr } from '../../../shared/utils/escape-xml-attr';
 
 @Component({
   imports: [MatIconButton, MatIconModule],
@@ -14,6 +17,7 @@ import { MatIconModule } from '@angular/material/icon';
 })
 export class MarkupEditor implements ControlValueAccessor {
   private readonly injector = inject(Injector);
+  private readonly dialog = inject(MatDialog);
 
   protected readonly value = signal('');
   protected readonly disabled = signal(false);
@@ -37,6 +41,20 @@ export class MarkupEditor implements ControlValueAccessor {
       ta.focus();
       ta.setSelectionRange(start + open.length, end + open.length);
     }, { injector: this.injector });
+  }
+
+  protected insertLink(): void {
+    this.dialog.open(LinkDialog)
+      .afterClosed()
+      .subscribe(
+        (result: LinkDialogResult | undefined) => {
+          if(result) {
+            const open = `<a href="${escapeXmlAttr(result.href)}"` + (result.title ? ` title="${escapeXmlAttr(result.title)}"` : ``) + `>`;
+            const close = `</a>`;
+            this.insert(open, close);
+          }
+        }
+      )
   }
 
   protected wrap(tag: 'i' | 'strong' | 'code'): void {
