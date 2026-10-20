@@ -1,10 +1,10 @@
-<button type="button" aria-label="Italic" matIconButton [disabled]="disabled()">
+<button type="button" aria-label="Italic" matIconButton [disabled]="disabled()" (click)="wrap('i')">
   <mat-icon>format_italic</mat-icon>
 </button>
-<button type="button" aria-label="Bold" matIconButton [disabled]="disabled()">
+<button type="button" aria-label="Bold" matIconButton [disabled]="disabled()" (click)="wrap('strong')">
   <mat-icon>format_bold</mat-icon>
 </button>
-<button type="button" aria-label="Code" matIconButton [disabled]="disabled()">
+<button type="button" aria-label="Code" matIconButton [disabled]="disabled()" (click)="wrap('code')">
   <mat-icon>code_xml</mat-icon>
 </button>
 <button type="button" aria-label="Link" matIconButton [disabled]="disabled()">

@@ -1,4 +1,4 @@
-import { Component, forwardRef, signal } from '@angular/core';
+import { afterNextRender, Component, ElementRef, forwardRef, inject, Injector, signal, viewChild } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatIconButton } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -13,8 +13,12 @@ import { MatIconModule } from '@angular/material/icon';
   templateUrl: './markup-editor.html',
 })
 export class MarkupEditor implements ControlValueAccessor {
+  private readonly injector = inject(Injector);
+
   protected readonly value = signal('');
   protected readonly disabled = signal(false);
+
+  private readonly textareaElement = viewChild.required<ElementRef<HTMLTextAreaElement>>('textarea');
 
   protected onChange: (value: string) => void = () => {};
   protected onTouched: () => void = () => {};
@@ -22,6 +26,21 @@ export class MarkupEditor implements ControlValueAccessor {
   protected handleInput(text: string): void {
     this.value.set(text);
     this.onChange(text);
+  }
+
+  private insert(open: string, close: string): void {
+    const ta = this.textareaElement().nativeElement;
+    const { selectionStart: start, selectionEnd: end, value: text }  = ta;
+    const newText = text.slice(0, start) + open + text.slice(start, end) + close + text.slice(end);
+    this.handleInput(newText);
+    afterNextRender(() => {
+      ta.focus();
+      ta.setSelectionRange(start + open.length, end + open.length);
+    }, { injector: this.injector });
+  }
+
+  protected wrap(tag: 'i' | 'strong' | 'code'): void {
+    this.insert(`<${tag}>`, `</${tag}>`);
   }
 
   writeValue(v: string | null): void {
