@@ -35,9 +35,8 @@
       <mat-error>Home page is invalid</mat-error>
     }
   </mat-form-field>
-  <mat-form-field>
-    <mat-label>Text</mat-label>
-    <textarea matInput formControlName="text"></textarea>
+  <app-markup-editor formControlName="text" />
+  @if (errorStateMatcher.isErrorState(form.controls.text, formDir())) {
     @if (form.controls.text.hasError('required')) {
       <mat-error>Comment text is Required</mat-error>
     }
@@ -53,7 +52,7 @@
     @if (form.controls.text.hasError('invalidHref')) {
       <mat-error>Link must start with http:// or https://</mat-error>
     }
-  </mat-form-field>
+  }
   <img [src]="captcha.value()?.imageDataUrl" alt="Captcha">
   <button matIconButton type="button" (click)="captcha.reload(); form.controls.captchaCode.reset()"><mat-icon>refresh</mat-icon></button>
   <mat-form-field>

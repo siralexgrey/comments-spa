@@ -10,19 +10,23 @@ import { CaptchaApi } from '../../../core/api/captcha-api';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { MatIconModule } from '@angular/material/icon';
 import { CommentsStore } from '../data-access/comments-store';
+import { MarkupEditor } from '../markup-editor/markup-editor';
+import { ErrorStateMatcher } from '@angular/material/core';
 
 @Component({
-  imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButton, MatIconButton, MatIconModule],
+  imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButton, MatIconButton, MatIconModule, MarkupEditor],
   selector: 'app-comment-form',
   styleUrl: './comment-form.scss',
   templateUrl: './comment-form.html',
 })
 export class CommentForm {
-  private fb = inject(NonNullableFormBuilder);
-  private captchaApi = inject(CaptchaApi);
-  private store = inject(CommentsStore);
+  private readonly fb = inject(NonNullableFormBuilder);
+  private readonly captchaApi = inject(CaptchaApi);
+  private readonly store = inject(CommentsStore);
 
-  private formDir = viewChild.required(FormGroupDirective);
+  protected readonly errorStateMatcher = inject(ErrorStateMatcher);
+
+  protected readonly formDir = viewChild.required(FormGroupDirective);
 
   readonly parentId = input<number>();
   readonly submitted = output<CommentDto>();

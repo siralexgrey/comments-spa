@@ -1,0 +1,22 @@
+<button type="button" aria-label="Italic" matIconButton [disabled]="disabled()">
+  <mat-icon>format_italic</mat-icon>
+</button>
+<button type="button" aria-label="Bold" matIconButton [disabled]="disabled()">
+  <mat-icon>format_bold</mat-icon>
+</button>
+<button type="button" aria-label="Code" matIconButton [disabled]="disabled()">
+  <mat-icon>code_xml</mat-icon>
+</button>
+<button type="button" aria-label="Link" matIconButton [disabled]="disabled()">
+  <mat-icon>link</mat-icon>
+</button>
+<label>
+  Text
+  <textarea
+    #textarea
+    [value]="value()"
+    (input)="handleInput(textarea.value)"
+    (blur)="onTouched()"
+    [disabled]="disabled()"
+  ></textarea>
+</label>
