@@ -53,6 +53,18 @@
       <mat-error>Link must start with http:// or https://</mat-error>
     }
   }
+  <input #fileInput type="file" accept="image/jpeg,image/gif,image/png,text/plain" (change)="pick(fileInput.files)" />
+  @if (errorStateMatcher.isErrorState(form.controls.attachment, formDir())) {
+    @if (form.controls.attachment.hasError('forbiddenType')) {
+      <mat-error>Only JPG, GIF, PNG or TXT</mat-error>
+    }
+    @if (form.controls.attachment.hasError('sizeExceeded')) {
+      <mat-error>
+        File is too big - {{ (form.controls.attachment.getError('sizeExceeded').actualSize / 1024) | number: '1.0-0' }}KB.
+        Max size for {{ form.controls.attachment.getError('sizeExceeded').type }} is {{ (form.controls.attachment.getError('sizeExceeded').allowedSize / 1024) | number: '1.0-0' }}KB
+      </mat-error>
+    }
+  }
   <img [src]="captcha.value()?.imageDataUrl" alt="Captcha">
   <button matIconButton type="button" (click)="captcha.reload(); form.controls.captchaCode.reset()"><mat-icon>refresh</mat-icon></button>
   <mat-form-field>

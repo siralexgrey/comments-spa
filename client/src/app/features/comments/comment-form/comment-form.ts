@@ -1,4 +1,4 @@
-import { Component, inject, input, output, signal, viewChild } from '@angular/core';
+import { Component, ElementRef, inject, input, output, signal, viewChild } from '@angular/core';
 import { CommentDto, CreateCommentDto } from '../../../core/models/comment.models';
 import { FormGroupDirective, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -16,9 +16,21 @@ import { CommentsApi } from '../../../core/api/comments-api';
 import { map } from 'rxjs';
 import { PreviewResponse } from '../../../core/models/preview.models';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { attachmentValidator } from '../../../shared/validators/attachment.validator';
+import { DecimalPipe } from '@angular/common';
 
 @Component({
-  imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButton, MatIconButton, MatIconModule, MarkupEditor, MatProgressBarModule],
+  imports: [
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButton,
+    MatIconButton,
+    MatIconModule,
+    MarkupEditor,
+    MatProgressBarModule,
+    DecimalPipe
+  ],
   selector: 'app-comment-form',
   styleUrl: './comment-form.scss',
   templateUrl: './comment-form.html',
@@ -32,6 +44,7 @@ export class CommentForm {
   protected readonly errorStateMatcher = inject(ErrorStateMatcher);
 
   protected readonly formDir = viewChild.required(FormGroupDirective);
+  private readonly fileInput = viewChild.required<ElementRef<HTMLInputElement>>('fileInput')
 
   readonly parentId = input<number>();
   readonly submitted = output<CommentDto>();
@@ -53,9 +66,10 @@ export class CommentForm {
     homePage:['', [ Validators.maxLength(2048), httpUrlValidator]],
     text: ['', [Validators.required, Validators.maxLength(5000), allowedHtmlValidator]],
     captchaCode: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9]+$/)]],
+    attachment: this.fb.control<File | null>(null, attachmentValidator)
   });
 
-  submit() {
+  protected submit() {
     const captcha = this.captcha.value();
     if (!captcha) {
       return;
@@ -80,10 +94,14 @@ export class CommentForm {
     if (this.parentId()) {
       createCommentDto.parentId = this.parentId();
     }
+    if (formValue.attachment) {
+      createCommentDto.attachment = formValue.attachment;
+    }
     this.store.createComment(createCommentDto)
       .subscribe({
         next: (value) => {
           this.formDir().resetForm();
+          this.fileInput().nativeElement.value = '';
           this.captcha.reload();
           this.previewText.set(undefined);
           this.submitted.emit(value);
@@ -95,7 +113,7 @@ export class CommentForm {
       })
   }
 
-  showPreview() {
+  protected showPreview() {
     if (this.form.controls.text.invalid) {
       this.form.controls.text.markAsTouched();
       this.previewText.set(undefined);
@@ -103,5 +121,11 @@ export class CommentForm {
     }
 
     this.previewText.set(this.form.controls.text.getRawValue());
+  }
+
+  protected pick(files: FileList | null) {
+    const file = files?.item(0) ?? null;
+    this.form.controls.attachment.setValue(file);
+    this.form.controls.attachment.markAsTouched();
   }
 }
