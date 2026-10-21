@@ -18,6 +18,8 @@ import { PreviewResponse } from '../../../core/models/preview.models';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { attachmentValidator } from '../../../shared/validators/attachment.validator';
 import { DecimalPipe } from '@angular/common';
+import { ProblemDetails } from '../../../core/models/api.models';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   imports: [
@@ -42,6 +44,7 @@ export class CommentForm {
   private readonly store = inject(CommentsStore);
 
   protected readonly errorStateMatcher = inject(ErrorStateMatcher);
+  protected readonly formErrors = signal<string[]>([]);
 
   protected readonly formDir = viewChild.required(FormGroupDirective);
   private readonly fileInput = viewChild.required<ElementRef<HTMLInputElement>>('fileInput')
@@ -70,6 +73,7 @@ export class CommentForm {
   });
 
   protected submit() {
+    this.formErrors.set([]);
     const captcha = this.captcha.value();
     if (!captcha) {
       return;
@@ -106,9 +110,10 @@ export class CommentForm {
           this.previewText.set(undefined);
           this.submitted.emit(value);
         },
-        error: () => {
+        error: (error: unknown) => {
           this.captcha.reload();
           this.form.controls.captchaCode.reset();
+          this.applyServerErrors(error);
         },
       })
   }
@@ -127,5 +132,25 @@ export class CommentForm {
     const file = files?.item(0) ?? null;
     this.form.controls.attachment.setValue(file);
     this.form.controls.attachment.markAsTouched();
+  }
+
+  private applyServerErrors(error: unknown) {
+    if (error instanceof HttpErrorResponse && error.status === 400) {
+      const problem: ProblemDetails = error.error;
+      const formErrors: string[] = [];
+      if (!problem.errors) {
+        this.formErrors.set([problem.title]);
+        return;
+      }
+      for (const [key, messages] of Object.entries(problem.errors)) {
+        const control = this.form.get(key);
+        if (control) {
+          control.setErrors({ server: messages[0] });
+        } else {
+          formErrors.push(...messages);
+        }
+      }
+      this.formErrors.set(formErrors);
+    }
   }
 }

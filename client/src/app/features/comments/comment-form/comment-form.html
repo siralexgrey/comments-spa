@@ -73,8 +73,16 @@
     @if (form.controls.captchaCode.hasError('required')) {
       <mat-error>Captcha is required</mat-error>
     }
+    @if (form.controls.captchaCode.hasError('server')) {
+      <mat-error>{{ form.controls.captchaCode.getError('server') }}</mat-error>
+    }
   </mat-form-field>
   <button matButton type="button" (click)="showPreview()">Preview</button>
+  <div role="alert">
+    @for(error of formErrors(); track $index) {
+      <p>{{ error }}</p>
+    }
+  </div>
   <button matButton="filled" [disabled]="!captcha.hasValue()">Send</button>
 </form>
 @if(preview.isLoading()) {

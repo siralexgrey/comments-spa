@@ -2,7 +2,7 @@ import { HttpErrorResponse, HttpInterceptorFn, HttpResponse } from "@angular/com
 import { delay, of, throwError } from "rxjs";
 import { createSeed } from "./mock-data";
 import { findComment, getCommentsPage } from "./comments-mock";
-import { CommentDto, DIR, SORT_BY, SortBy, SortDir } from "../models/comment.models";
+import { AttachmentDto, CommentDto, DIR, SORT_BY, SortBy, SortDir } from "../models/comment.models";
 import { CaptchaDto } from "../models/captcha.models";
 import { isInArray } from '../../shared/utils/is-in-array';
 import { ProblemDetails } from "../models/api.models";
@@ -15,6 +15,7 @@ const db = createSeed();
 const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="120" height="40"><text x="10" y="28" font-size="24">${MOCK_CAPTCHA_CODE}</text></svg>`;
 const imageDataUrl = 'data:image/svg+xml,' + encodeURIComponent(svg);
 let nextId = 5000;
+let nextAttachmentId = 5000;
 
 export const mockApiInterceptor: HttpInterceptorFn = (req, next) => {
   const url = req.url;
@@ -44,9 +45,9 @@ export const mockApiInterceptor: HttpInterceptorFn = (req, next) => {
     const email = form.get('email') as string;
     const text = form.get('text') as string;
     const captchaCode = form.get('captchaCode') as string;
-    const attachment = form.get('attachment');
     const homePage = form.get('homePage') as string;
     const parentId = form.get('parentId') as string;
+    const attachment = form.get('attachment');
     if (captchaCode !== MOCK_CAPTCHA_CODE) {
       const errors = { captchaCode: ['Invalid or expired captcha code'] };
       return badRequest(errors, url);
@@ -62,6 +63,19 @@ export const mockApiInterceptor: HttpInterceptorFn = (req, next) => {
       replies: [],
       attachment: null
     }
+
+    if (attachment instanceof File) {
+      const attachmentDto: AttachmentDto = {
+        id: nextAttachmentId++,
+        originalName: attachment.name,
+        type: attachment.type.startsWith('image/') ? 'image' : 'text',
+        url: URL.createObjectURL(attachment),
+        width: null,
+        height: null,
+      }
+      commentDto.attachment = attachmentDto;
+    }
+
     if (parentId) {
       const parentComment = findComment(db, Number(parentId));
       if (!parentComment) {
