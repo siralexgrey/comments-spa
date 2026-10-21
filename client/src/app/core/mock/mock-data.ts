@@ -18,7 +18,7 @@ const IMAGE: AttachmentDto = {
   id: 1,
   originalName: 'sample.png',
   type: 'image',
-  url: '/uploads/sample.png',
+  url: '/mock-uploads/sample.png',
   width: 320,
   height: 240,
 };
@@ -27,7 +27,7 @@ const TEXT_FILE: AttachmentDto = {
   id: 2,
   originalName: 'notes.txt',
   type: 'text',
-  url: '/uploads/sample.txt',
+  url: '/mock-uploads/sample.txt',
   width: null,
   height: null,
 };
