@@ -4,12 +4,14 @@ import { DatePipe } from '@angular/common';
 import { DATE_FORMAT } from '../../../shared/utils/date-format';
 import { CommentAuthor } from '../comment-author/comment-author';
 import { CommentReplyAction } from '../comment-reply-action/comment-reply-action';
+import { CommentAttachment } from '../comment-attachment/comment-attachment';
 
 @Component({
   imports: [
     DatePipe,
     CommentAuthor,
-    CommentReplyAction
+    CommentReplyAction,
+    CommentAttachment
 ],
   selector: 'app-comment-replies',
   templateUrl: './comment-replies.html',

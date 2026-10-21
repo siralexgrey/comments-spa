@@ -1,0 +1,13 @@
+@switch (attachment().type) {
+  @case ('text') {
+    <button matButton>{{ attachment().originalName }}</button>
+  }
+  @case ('image') {
+    <img
+      [src]="attachment().url"
+      alt="{{ attachment().originalName }}"
+      [attr.width]="attachment().width"
+      [attr.height]="attachment().height"
+    />
+  }
+}

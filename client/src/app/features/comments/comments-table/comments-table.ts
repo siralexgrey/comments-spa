@@ -9,6 +9,8 @@ import { CommentReplies } from '../comment-replies/comment-replies';
 import { DATE_FORMAT } from '../../../shared/utils/date-format';
 import { CommentAuthor } from '../comment-author/comment-author';
 import { CommentReplyAction } from '../comment-reply-action/comment-reply-action';
+import { CommentAttachment } from '../comment-attachment/comment-attachment';
+import { TypedCellDef } from '../../../shared/directives/typed-cell-def';
 
 @Component({
   imports: [
@@ -18,7 +20,9 @@ import { CommentReplyAction } from '../comment-reply-action/comment-reply-action
     DatePipe,
     CommentReplies,
     CommentAuthor,
-    CommentReplyAction
+    CommentReplyAction,
+    CommentAttachment,
+    TypedCellDef
 ],
   selector: 'app-comments-table',
   styleUrl: './comments-table.scss',
