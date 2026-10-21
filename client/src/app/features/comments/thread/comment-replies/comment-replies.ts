@@ -1,10 +1,10 @@
 import { Component, input, signal } from '@angular/core';
-import { CommentDto } from '../../../core/models/comment.models';
+import { CommentDto } from '@core/models/comment.models';
 import { DatePipe, I18nPluralPipe } from '@angular/common';
-import { DATE_FORMAT } from '../../../shared/utils/date-format';
+import { DATE_FORMAT } from '@shared/utils/date-format';
 import { CommentAuthor } from '../comment-author/comment-author';
 import { CommentReplyAction } from '../comment-reply-action/comment-reply-action';
-import { CommentAttachment } from '../comment-attachment/comment-attachment';
+import { CommentAttachment } from '../../attachment/comment-attachment/comment-attachment';
 
 @Component({
   imports: [

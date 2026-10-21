@@ -4,7 +4,7 @@ import { MatIconButton } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { LinkDialog, LinkDialogResult } from '../link-dialog/link-dialog';
-import { escapeXmlAttr } from '../../../shared/utils/escape-xml-attr';
+import { escapeXmlAttr } from '@shared/utils/escape-xml-attr';
 
 @Component({
   imports: [MatIconButton, MatIconModule],

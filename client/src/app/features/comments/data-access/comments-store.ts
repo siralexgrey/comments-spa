@@ -1,8 +1,8 @@
 import { computed, inject, linkedSignal, Service, signal } from "@angular/core";
-import { CommentDto, CreateCommentDto, GetCommentsQuery, SortBy, SortDir } from "../../../core/models/comment.models";
-import { CommentsApi } from "../../../core/api/comments-api";
+import { CommentDto, CreateCommentDto, GetCommentsQuery, SortBy, SortDir } from "@core/models/comment.models";
+import { CommentsApi } from "@core/api/comments-api";
 import { rxResource } from "@angular/core/rxjs-interop";
-import { PagedResponse } from "../../../core/models/api.models";
+import { PagedResponse } from "@core/models/api.models";
 import { tap } from "rxjs";
 
 @Service()

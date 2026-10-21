@@ -1,8 +1,8 @@
 import { Component, inject } from '@angular/core';
 import { CommentsStore } from '../data-access/comments-store';
-import { CommentsTable } from '../comments-table/comments-table';
+import { CommentsTable } from '../thread/comments-table/comments-table';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { CommentForm } from '../comment-form/comment-form';
+import { CommentForm } from '../form/comment-form/comment-form';
 
 @Component({
   imports: [

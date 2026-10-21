@@ -1,5 +1,5 @@
 import { Component, inject, input } from '@angular/core';
-import { AttachmentDto } from '../../../core/models/comment.models';
+import { AttachmentDto } from '@core/models/comment.models';
 import { MatButton } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';

@@ -4,9 +4,9 @@ import { createSeed } from "./mock-data";
 import { findComment, getCommentsPage } from "./comments-mock";
 import { AttachmentDto, CommentDto, DIR, SORT_BY, SortBy, SortDir } from "../models/comment.models";
 import { CaptchaDto } from "../models/captcha.models";
-import { isInArray } from '../../shared/utils/is-in-array';
+import { isInArray } from '@shared/utils/is-in-array';
 import { ProblemDetails } from "../models/api.models";
-import { checkAllowedHtml } from "../../shared/validators/allowed-html.validator";
+import { checkAllowedHtml } from "@shared/validators/allowed-html.validator";
 import { PreviewRequest, PreviewResponse } from "../models/preview.models";
 
 export const MOCK_CAPTCHA_CODE = 'ABC12';

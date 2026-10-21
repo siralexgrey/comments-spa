@@ -1,8 +1,8 @@
 import { Component, inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
-import { AttachmentDto } from '../../../core/models/comment.models';
+import { AttachmentDto } from '@core/models/comment.models';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { AttachmentApi } from '../../../core/api/attachment-api';
+import { AttachmentApi } from '@core/api/attachment-api';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatButtonModule } from '@angular/material/button';
 

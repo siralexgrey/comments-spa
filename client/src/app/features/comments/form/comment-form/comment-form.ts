@@ -1,24 +1,24 @@
 import { Component, ElementRef, inject, input, output, signal, viewChild } from '@angular/core';
-import { CommentDto, CreateCommentDto } from '../../../core/models/comment.models';
+import { CommentDto, CreateCommentDto } from '@core/models/comment.models';
 import { FormGroupDirective, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButton, MatIconButton } from '@angular/material/button';
-import { httpUrlValidator } from '../../../shared/validators/http-url.validator';
-import { allowedHtmlValidator } from '../../../shared/validators/allowed-html.validator';
-import { CaptchaApi } from '../../../core/api/captcha-api';
+import { httpUrlValidator } from '@shared/validators/http-url.validator';
+import { allowedHtmlValidator } from '@shared/validators/allowed-html.validator';
+import { CaptchaApi } from '@core/api/captcha-api';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { MatIconModule } from '@angular/material/icon';
-import { CommentsStore } from '../data-access/comments-store';
+import { CommentsStore } from '../../data-access/comments-store';
 import { MarkupEditor } from '../markup-editor/markup-editor';
 import { ErrorStateMatcher } from '@angular/material/core';
-import { CommentsApi } from '../../../core/api/comments-api';
+import { CommentsApi } from '@core/api/comments-api';
 import { map } from 'rxjs';
-import { PreviewResponse } from '../../../core/models/preview.models';
+import { PreviewResponse } from '@core/models/preview.models';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { attachmentValidator } from '../../../shared/validators/attachment.validator';
+import { attachmentValidator } from '../validators/attachment.validator';
 import { DecimalPipe } from '@angular/common';
-import { ProblemDetails } from '../../../core/models/api.models';
+import { ProblemDetails } from '@core/models/api.models';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({

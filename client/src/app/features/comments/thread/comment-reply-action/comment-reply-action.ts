@@ -1,6 +1,6 @@
 import { Component, computed, inject, input } from '@angular/core';
-import { CommentsStore } from '../data-access/comments-store';
-import { CommentForm } from '../comment-form/comment-form';
+import { CommentsStore } from '../../data-access/comments-store';
+import { CommentForm } from '../../form/comment-form/comment-form';
 
 @Component({
   imports: [CommentForm],
