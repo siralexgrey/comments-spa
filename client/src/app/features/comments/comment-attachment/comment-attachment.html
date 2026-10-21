@@ -1,15 +1,19 @@
-<button matButton (click)="openDialog()">
-  @switch (attachment().type) {
-    @case ('text') {
+@switch (attachment().type) {
+  @case ('text') {
+    <button matButton="outlined" (click)="openDialog()">
+      <mat-icon>description</mat-icon>
       {{ attachment().originalName }}
-    }
-    @case ('image') {
-        <img
-          [src]="attachment().url"
-          alt="{{ attachment().originalName }}"
-          [attr.width]="attachment().width"
-          [attr.height]="attachment().height"
-        />
-    }
+    </button>
   }
-</button>
+  @case ('image') {
+    <button type="button" class="thumbnail" (click)="openDialog()">
+      <img
+        class="block h-auto max-h-30 w-auto max-w-40"
+        [src]="attachment().url"
+        alt="{{ attachment().originalName }}"
+        [attr.width]="attachment().width"
+        [attr.height]="attachment().height"
+      />
+    </button>
+  }
+}

@@ -2,17 +2,17 @@
 <mat-dialog-content>
   @switch (data.type) {
     @case ('image') {
-      <img [src]="data.url" alt="{{ data.originalName }}" [attr.width]="data.width" [attr.height]="data.height" />
+      <img class="mx-auto block h-auto max-w-full" [src]="data.url" alt="{{ data.originalName }}" [attr.width]="data.width" [attr.height]="data.height" />
     }
     @case ('text') {
       @if(text.isLoading()) {
         <mat-progress-bar></mat-progress-bar>
       }
       @else if (text.error(); as error) {
-        <p>Fail to load the file</p>
+        <p class="text-(--mat-sys-error)">Failed to load the file</p>
       }
       @else if (text.hasValue()) {
-        <pre>{{ text.value() }}</pre>
+        <pre class="max-h-[60vh] overflow-auto whitespace-pre-wrap break-words font-mono text-sm">{{ text.value() }}</pre>
       }
     }
   }

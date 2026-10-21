@@ -10,20 +10,25 @@ html {
   @include mat.theme(
     (
       color: (
-        primary: mat.$azure-palette,
-        tertiary: mat.$blue-palette,
+        primary: mat.$cyan-palette,
+        tertiary: mat.$violet-palette,
       ),
-      typography: Roboto,
+      typography: Onest,
       density: 0,
     )
   );
 }
 
+:root {
+  // Reply thread rails, one hue per nesting depth (cycles after 4).
+  --rail-1: var(--mat-sys-primary);
+  --rail-2: var(--mat-sys-tertiary);
+  --rail-3: #f2a7c3;
+  --rail-4: #e9c27a;
+}
+
 body {
-  // Default the application to a light color theme. This can be changed to
-  // `dark` to enable the dark color theme, or to `light dark` to defer to the
-  // user's system settings.
-  color-scheme: light;
+  color-scheme: dark;
 
   // Set a default background, font and text colors for the application using
   // Angular Material's system-level CSS variables. Learn more about these
@@ -36,4 +41,37 @@ body {
   margin: 0;
   height: 100%;
 }
-/* You can add global styles to this file, and also import other style files */
+
+// "Reply" and "Show replies" share one row; the reply form and the replies list
+// (order + basis-full in their components) wrap below it.
+.thread-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  margin-top: 8px;
+
+  > app-comment-reply-action,
+  > app-comment-replies {
+    display: contents;
+  }
+}
+
+// Comment text comes from [innerHTML], so component styles can't reach it.
+.comment-text {
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+
+  a {
+    color: var(--mat-sys-primary);
+    text-decoration: underline;
+  }
+
+  code {
+    padding: 0.1em 0.35em;
+    border-radius: 4px;
+    background: var(--mat-sys-surface-container-highest);
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.9em;
+  }
+}

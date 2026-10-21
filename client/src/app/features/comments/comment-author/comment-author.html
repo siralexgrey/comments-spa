@@ -1,6 +1,12 @@
-@if (homePage(); as url) {
-  <a [href]="url" target="_blank" rel="noopener noreferrer" class="font-semibold">{{ userName() }}</a>
-}
-@else {
-  <span class="font-semibold">{{ userName() }}</span>
-}
+<span class="inline-flex items-center gap-2">
+  <span
+    class="grid size-8 shrink-0 place-items-center rounded-full shadow-[0_0_0_2px_var(--avatar-ring,transparent)] bg-(--mat-sys-primary-container) text-sm font-medium uppercase text-(--mat-sys-on-primary-container)"
+    aria-hidden="true"
+  >{{ userName().charAt(0) }}</span>
+  @if (homePage(); as url) {
+    <a [href]="url" target="_blank" rel="noopener noreferrer" class="font-semibold text-(--mat-sys-primary) hover:underline">{{ userName() }}</a>
+  }
+  @else {
+    <span class="font-semibold">{{ userName() }}</span>
+  }
+</span>

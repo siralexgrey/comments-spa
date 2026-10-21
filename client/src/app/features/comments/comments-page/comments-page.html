@@ -1,19 +1,31 @@
-@if(store.isLoading()) {
-  <mat-progress-bar mode="indeterminate" />
-}
-@if(store.error(); as error) {
-  {{ error.message }}
-}
-<app-comment-form />
-<app-comments-table
-  [class.opacity-50]="store.isLoading()"
-  [comments]="store.items()"
-  [sortBy]="store.query().sortBy"
-  [sortDir]="store.query().dir"
-  [page]="store.query().page"
-  [totalCount]="store.totalCount()"
-  [pageSize]="store.pageSize()"
-  (sortChange)="store.setSort($event.sortBy, $event.dir)"
-  (pageChange)="store.setPage($event)"
-/>
+<main class="mx-auto max-w-5xl px-4 py-8">
+  <h1 class="mb-6 text-2xl font-medium">Comments</h1>
 
+  <section
+    class="mb-8 rounded-xl bg-(--mat-sys-surface-container-low) p-5"
+    aria-label="New comment"
+  >
+    <app-comment-form />
+  </section>
+
+  <div class="h-1">
+    @if(store.isLoading()) {
+      <mat-progress-bar mode="indeterminate" />
+    }
+  </div>
+  @if(store.error(); as error) {
+    <p class="my-4 text-(--mat-sys-error)">{{ error.message }}</p>
+  }
+  <app-comments-table
+    class="block transition-opacity"
+    [class.opacity-50]="store.isLoading()"
+    [comments]="store.items()"
+    [sortBy]="store.query().sortBy"
+    [sortDir]="store.query().dir"
+    [page]="store.query().page"
+    [totalCount]="store.totalCount()"
+    [pageSize]="store.pageSize()"
+    (sortChange)="store.setSort($event.sortBy, $event.dir)"
+    (pageChange)="store.setPage($event)"
+  />
+</main>
