@@ -1,13 +1,15 @@
-@switch (attachment().type) {
-  @case ('text') {
-    <button matButton>{{ attachment().originalName }}</button>
+<button matButton (click)="openDialog()">
+  @switch (attachment().type) {
+    @case ('text') {
+      {{ attachment().originalName }}
+    }
+    @case ('image') {
+        <img
+          [src]="attachment().url"
+          alt="{{ attachment().originalName }}"
+          [attr.width]="attachment().width"
+          [attr.height]="attachment().height"
+        />
+    }
   }
-  @case ('image') {
-    <img
-      [src]="attachment().url"
-      alt="{{ attachment().originalName }}"
-      [attr.width]="attachment().width"
-      [attr.height]="attachment().height"
-    />
-  }
-}
+</button>
