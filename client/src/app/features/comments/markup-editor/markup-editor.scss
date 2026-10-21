@@ -1,0 +1,20 @@
+:host {
+  display: block;
+}
+
+.editor {
+  border: 1px solid var(--mat-sys-outline);
+  border-radius: 4px;
+  background: var(--mat-sys-surface-container-highest);
+  transition: border-color 150ms;
+
+  &:focus-within {
+    border-color: var(--mat-sys-primary);
+    box-shadow: inset 0 0 0 1px var(--mat-sys-primary);
+  }
+}
+
+// Same red frame as mat-form-field when the control is invalid and shown.
+:host(.ng-invalid.ng-touched) .editor {
+  border-color: var(--mat-sys-error);
+}

@@ -1,0 +1,18 @@
+.thumbnail {
+  display: block;
+  overflow: hidden;
+  padding: 0;
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: 8px;
+  cursor: zoom-in;
+  transition: border-color 150ms;
+
+  &:hover {
+    border-color: var(--mat-sys-primary);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--mat-sys-primary);
+    outline-offset: 2px;
+  }
+}

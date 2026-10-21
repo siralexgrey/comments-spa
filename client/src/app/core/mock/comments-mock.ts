@@ -16,3 +16,17 @@ export function getCommentsPage(all: CommentDto[], query: GetCommentsQuery): Pag
     totalCount: all.length
   }
 }
+
+export function findComment(list: CommentDto[], id: number): CommentDto | undefined {
+  for (const comment of list) {
+    if (id === comment.id) {
+      return comment;
+    }
+    const found = findComment(comment.replies, id);
+
+    if (found) {
+      return found;
+    }
+  }
+  return undefined;
+}

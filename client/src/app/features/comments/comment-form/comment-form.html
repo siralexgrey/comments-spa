@@ -1,0 +1,126 @@
+<form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-2">
+  <div class="grid gap-x-4 sm:grid-cols-3">
+    <mat-form-field class="w-full">
+      <mat-label>User Name</mat-label>
+      <input matInput formControlName="userName" />
+      @if (form.controls.userName.hasError('required')) {
+        <mat-error>User name is required</mat-error>
+      }
+      @if (form.controls.userName.hasError('maxlength')) {
+        <mat-error>User name max length is 50 characters</mat-error>
+      }
+      @if (form.controls.userName.hasError('pattern')) {
+        <mat-error>User name should only contain latin letters and numbers</mat-error>
+      }
+    </mat-form-field>
+    <mat-form-field class="w-full">
+      <mat-label>Email</mat-label>
+      <input matInput formControlName="email" />
+      @if (form.controls.email.hasError('required')) {
+        <mat-error>Email is required</mat-error>
+      }
+      @if (form.controls.email.hasError('email')) {
+        <mat-error>Email is not valid</mat-error>
+      }
+      @if (form.controls.email.hasError('maxlength')) {
+        <mat-error>Email max length is 254 characters</mat-error>
+      }
+    </mat-form-field>
+    <mat-form-field class="w-full">
+      <mat-label>Home page</mat-label>
+      <input matInput formControlName="homePage" />
+      @if (form.controls.homePage.hasError('maxlength')) {
+        <mat-error>Home page max length is 2048 characters</mat-error>
+      }
+      @if (form.controls.homePage.hasError('httpUrl')) {
+        <mat-error>Home page is invalid</mat-error>
+      }
+    </mat-form-field>
+  </div>
+
+  <div>
+    <app-markup-editor formControlName="text" />
+    <div class="field-errors">
+      @if (errorStateMatcher.isErrorState(form.controls.text, formDir())) {
+        @if (form.controls.text.hasError('required')) {
+          <mat-error>Comment text is Required</mat-error>
+        }
+        @if (form.controls.text.hasError('invalidXhtml')) {
+          <mat-error>Invalid XHTML</mat-error>
+        }
+        @if (form.controls.text.hasError('forbiddenTag')) {
+          <mat-error>Forbidden tag: &lt;{{ form.controls.text.getError('forbiddenTag').tag}}&gt;</mat-error>
+        }
+        @if (form.controls.text.hasError('forbiddenAttr')) {
+          <mat-error>Forbidden attribute: {{ form.controls.text.getError('forbiddenAttr').attr }} in {{ form.controls.text.getError('forbiddenAttr').tag }}</mat-error>
+        }
+        @if (form.controls.text.hasError('invalidHref')) {
+          <mat-error>Link must start with http:// or https://</mat-error>
+        }
+      }
+    </div>
+  </div>
+
+  <div>
+    <input
+      #fileInput
+      type="file"
+      accept="image/jpeg,image/gif,image/png,text/plain"
+      aria-label="Attachment: JPG, GIF, PNG or TXT"
+      class="file-input"
+      (change)="pick(fileInput.files)"
+    />
+    <div class="field-errors">
+      @if (errorStateMatcher.isErrorState(form.controls.attachment, formDir())) {
+        @if (form.controls.attachment.hasError('forbiddenType')) {
+          <mat-error>Only JPG, GIF, PNG or TXT</mat-error>
+        }
+        @if (form.controls.attachment.hasError('sizeExceeded')) {
+          <mat-error>
+            File is too big - {{ (form.controls.attachment.getError('sizeExceeded').actualSize / 1024) | number: '1.0-0' }}KB.
+            Max size for {{ form.controls.attachment.getError('sizeExceeded').type }} is {{ (form.controls.attachment.getError('sizeExceeded').allowedSize / 1024) | number: '1.0-0' }}KB
+          </mat-error>
+        }
+      }
+    </div>
+  </div>
+
+  <div class="flex flex-wrap items-start gap-3">
+    <div class="flex items-center gap-1 pt-2">
+      <img class="captcha-image" [src]="captcha.value()?.imageDataUrl" alt="Captcha">
+      <button matIconButton type="button" aria-label="Refresh captcha" (click)="captcha.reload(); form.controls.captchaCode.reset()"><mat-icon>refresh</mat-icon></button>
+    </div>
+    <mat-form-field class="w-48">
+      <mat-label>Captcha</mat-label>
+      <input matInput formControlName="captchaCode" />
+      @if (form.controls.captchaCode.hasError('required')) {
+        <mat-error>Captcha is required</mat-error>
+      }
+      @if (form.controls.captchaCode.hasError('server')) {
+        <mat-error>{{ form.controls.captchaCode.getError('server') }}</mat-error>
+      }
+    </mat-form-field>
+  </div>
+
+  <div role="alert" class="text-sm text-(--mat-sys-error)">
+    @for(error of formErrors(); track $index) {
+      <p>{{ error }}</p>
+    }
+  </div>
+  <div class="flex justify-end gap-2">
+    <button matButton="outlined" type="button" (click)="showPreview()">Preview</button>
+    <button matButton="filled" [disabled]="!captcha.hasValue()">Send</button>
+  </div>
+</form>
+@if(preview.isLoading()) {
+  <mat-progress-bar class="mt-4"></mat-progress-bar>
+}
+@if(preview.hasValue()) {
+  <div class="mt-4 rounded-lg border border-dashed border-(--mat-sys-outline-variant) p-4">
+    <p class="mb-2 text-xs uppercase tracking-wide text-(--mat-sys-on-surface-variant)">Preview</p>
+    <div class="comment-text" [innerHTML]="preview.value()"></div>
+  </div>
+}
+@if(preview.error()) {
+  <p class="mt-4 text-(--mat-sys-error)">Preview failed</p>
+}

@@ -1,8 +1,9 @@
 import { computed, inject, linkedSignal, Service, signal } from "@angular/core";
-import { CommentDto, GetCommentsQuery, SortBy, SortDir } from "../../../core/models/comment.models";
+import { CommentDto, CreateCommentDto, GetCommentsQuery, SortBy, SortDir } from "../../../core/models/comment.models";
 import { CommentsApi } from "../../../core/api/comments-api";
 import { rxResource } from "@angular/core/rxjs-interop";
 import { PagedResponse } from "../../../core/models/api.models";
+import { tap } from "rxjs";
 
 @Service()
 export class CommentsStore {
@@ -10,6 +11,9 @@ export class CommentsStore {
 
   private readonly _query = signal<GetCommentsQuery>({ page: 1, sortBy: 'createdAt', dir: 'desc' });
   readonly query = this._query.asReadonly();
+
+  private readonly _replyingToId = signal<number | null>(null);
+  readonly replyingToId = this._replyingToId.asReadonly();
 
   private readonly comments = rxResource({
     params: () => this._query(),
@@ -33,5 +37,16 @@ export class CommentsStore {
 
   setSort(sortBy: SortBy, dir: SortDir) {
     this._query.update(q => ({ ...q, sortBy, dir, page: 1 }));
+  }
+
+  setReplyingToId(id: number | null) {
+    this._replyingToId.set(id);
+  }
+
+  createComment(dto: CreateCommentDto) {
+    return this.api.createComment(dto)
+      .pipe(
+        tap(() => this.comments.reload())
+      )
   }
 }

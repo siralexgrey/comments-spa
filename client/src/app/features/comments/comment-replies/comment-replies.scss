@@ -1,0 +1,24 @@
+// Each nesting level gets its own rail colour; the avatar ring repeats it,
+// so in a deep thread you can tell which level a reply belongs to.
+.thread {
+  --rail: var(--rail-1);
+  --avatar-ring: color-mix(in oklab, var(--rail) 80%, transparent);
+  border-left: 2px solid color-mix(in oklab, var(--rail) 70%, var(--mat-sys-surface));
+}
+
+.thread[data-rail='2'] { --rail: var(--rail-2); }
+.thread[data-rail='3'] { --rail: var(--rail-3); }
+.thread[data-rail='4'] { --rail: var(--rail-4); }
+
+@media (prefers-reduced-motion: no-preference) {
+  .thread {
+    animation: thread-open 160ms ease-out;
+  }
+}
+
+@keyframes thread-open {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
