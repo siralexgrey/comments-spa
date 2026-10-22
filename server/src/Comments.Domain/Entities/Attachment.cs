@@ -12,6 +12,10 @@ public class Attachment(
     int? height
 )
 {
+    public const int OriginalNameMaxLength = 255;
+    public const int StoredNameMaxLength = 100;
+    public const int ContentTypeMaxLength = 50;
+
     public int Id { get; private set; }
     public int CommentId { get; private set; }
     public AttachmentType Type { get; private set; } = type;

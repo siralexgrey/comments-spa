@@ -12,6 +12,12 @@ public class Comment(
     string userAgent
 )
 {
+    public const int UserNameMaxLength = 50;
+    public const int EmailMaxLength = 254;
+    public const int HomePageMaxLength = 2048;
+    public const int IpAddressMaxLength = 45;
+    public const int UserAgentMaxLength = 512;
+    
     public int Id { get; private set; }
     public int? ParentId { get; private set; } = parentId;
     public int? RootId { get; private set; } = rootId;
