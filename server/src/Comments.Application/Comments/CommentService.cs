@@ -28,6 +28,33 @@ public class CommentService(ICommentRepository repository) : ICommentService
         return new PagedResponse<CommentDto>([.. rootCommentsList.Select(r => ToDto(r, repliesByParent))], page, PageSize, totalCount);
     }
 
+    public async Task<CommentDto> CreateAsync(CreateCommentRequest request, CancellationToken cancellationToken)
+    {
+        int? rootId = null;
+        if (request.ParentId is not null)
+        {
+            Comment parent = await _repository.GetByIdAsync(request.ParentId.Value, cancellationToken)
+                ?? throw new InvalidOperationException($"Parent comment {request.ParentId} not found");
+            rootId = parent.RootId ?? parent.Id;
+        }
+
+        Comment comment = new(
+            parentId: request.ParentId,
+            rootId: rootId,
+            userName: request.UserName,
+            email: request.Email,
+            homePage: request.HomePage,
+            text: request.Text,
+            createdAt: DateTime.UtcNow,
+            ipAddress: request.IpAddress,
+            userAgent: request.UserAgent
+        );
+        await _repository.AddAsync(comment, cancellationToken);
+
+        var emptyLookup = Array.Empty<Comment>().ToLookup(c => c.ParentId);
+        return ToDto(comment, emptyLookup);
+    }
+
     private static CommentDto ToDto(Comment comment, ILookup<int?, Comment> repliesByParent)
     {
         return new CommentDto(

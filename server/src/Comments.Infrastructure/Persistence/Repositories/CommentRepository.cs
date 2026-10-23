@@ -14,6 +14,14 @@ public class CommentRepository(CommentsDbContext db) : ICommentRepository
     {
         return _db.Comments.CountAsync(c => c.ParentId == null, cancellationToken);
     }
+
+    public async Task<Comment?> GetByIdAsync(int id, CancellationToken cancellationToken)
+    {
+        return await _db.Comments
+            .AsNoTracking()
+            .FirstOrDefaultAsync(c => c.Id == id, cancellationToken);
+    }
+
     public async Task<IReadOnlyList<Comment>> GetRootPageAsync(
         CommentSortBy sortBy,
         SortDirection direction,
@@ -55,5 +63,11 @@ public class CommentRepository(CommentsDbContext db) : ICommentRepository
             .Include(c => c.Attachment)
             .Where(c => c.RootId != null && rootIds.Contains(c.RootId.Value))
             .ToListAsync(cancellationToken);
+    }
+
+    public async Task AddAsync(Comment comment, CancellationToken cancellationToken)
+    {
+        _db.Comments.Add(comment);
+        await _db.SaveChangesAsync(cancellationToken);
     }
 }

@@ -5,6 +5,11 @@ namespace Comments.Application.Comments;
 
 public interface ICommentRepository
 {
+    Task<int> CountRootsAsync(CancellationToken cancellationToken);
+    Task<Comment?> GetByIdAsync(
+        int id,
+        CancellationToken cancellationToken
+    );
     Task<IReadOnlyList<Comment>> GetRootPageAsync(
         CommentSortBy sortBy,
         SortDirection direction,
@@ -12,11 +17,9 @@ public interface ICommentRepository
         int take,
         CancellationToken cancellationToken
     );
-
-    Task<int> CountRootsAsync(CancellationToken cancellationToken);
-
     Task<IReadOnlyList<Comment>> GetRepliesByRootIdsAsync(
         IReadOnlyCollection<int> rootIds,
         CancellationToken cancellationToken
     );
+    Task AddAsync(Comment comment, CancellationToken cancellationToken);
 }

@@ -11,4 +11,9 @@ public interface ICommentService
         SortDirection direction,
         CancellationToken cancellationToken
     );
+
+    Task<CommentDto> CreateAsync(
+        CreateCommentRequest request,
+        CancellationToken cancellationToken
+    );
 }
