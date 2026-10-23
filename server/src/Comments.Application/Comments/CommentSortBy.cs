@@ -1,6 +1,6 @@
 namespace Comments.Application.Comments;
 
-public enum CommentsSortBy
+public enum CommentSortBy
 {
     CreatedAt,
     UserName,

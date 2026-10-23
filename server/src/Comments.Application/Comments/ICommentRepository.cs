@@ -6,7 +6,7 @@ namespace Comments.Application.Comments;
 public interface ICommentRepository
 {
     Task<IReadOnlyList<Comment>> GetRootPageAsync(
-        CommentsSortBy sortBy,
+        CommentSortBy sortBy,
         SortDirection direction,
         int skip,
         int take,
