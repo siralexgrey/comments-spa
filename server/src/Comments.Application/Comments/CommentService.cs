@@ -38,6 +38,10 @@ public class CommentService(ICommentRepository repository) : ICommentService
             rootId = parent.RootId ?? parent.Id;
         }
 
+        string userAgent = request.UserAgent.Length > Comment.UserAgentMaxLength
+            ? request.UserAgent[..Comment.UserAgentMaxLength]
+            : request.UserAgent;
+
         Comment comment = new(
             parentId: request.ParentId,
             rootId: rootId,
@@ -47,7 +51,7 @@ public class CommentService(ICommentRepository repository) : ICommentService
             text: request.Text,
             createdAt: DateTime.UtcNow,
             ipAddress: request.IpAddress,
-            userAgent: request.UserAgent
+            userAgent
         );
         await _repository.AddAsync(comment, cancellationToken);
 

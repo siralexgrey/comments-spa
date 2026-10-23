@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
+using Comments.Api.Models;
 using Comments.Application.Comments;
 using Comments.Application.Comments.Dtos;
 using Comments.Application.Common;
@@ -23,5 +24,29 @@ public class CommentsController(ICommentService commentService) : ControllerBase
     )
     {
         return await _commentService.GetPageAsync(page, sortBy, dir, cancellationToken);
+    }
+
+    [HttpPost]
+    public async Task<ActionResult<CommentDto>> Create(
+        [FromForm] CreateCommentForm form,
+        CancellationToken cancellationToken = default
+    )
+    {
+        string clientIp = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+        string userAgent = Request.Headers.UserAgent.ToString();
+
+        CreateCommentRequest request = new(
+            ParentId: form.ParentId,
+            UserName: form.UserName,
+            Email: form.Email,
+            HomePage: form.HomePage,
+            Text: form.Text,
+            IpAddress: clientIp,
+            UserAgent: userAgent
+        );
+
+        CommentDto created = await _commentService.CreateAsync(request, cancellationToken);
+
+        return StatusCode(StatusCodes.Status201Created, created);
     }
 }
