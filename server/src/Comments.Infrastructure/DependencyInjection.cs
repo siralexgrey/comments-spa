@@ -1,4 +1,6 @@
+using Comments.Application.Comments;
 using Comments.Infrastructure.Persistence;
+using Comments.Infrastructure.Persistence.Repositories;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -14,6 +16,7 @@ public static class DependencyInjection
             ?? throw new InvalidOperationException("Connection string 'Default' is not configured");
 
         services.AddDbContext<CommentsDbContext>(options => options.UseSqlServer(connectionString));
+        services.AddScoped<ICommentRepository, CommentRepository>();
 
         return services;
     }

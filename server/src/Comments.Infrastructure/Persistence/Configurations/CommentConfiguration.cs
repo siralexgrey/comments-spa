@@ -16,6 +16,11 @@ public class CommentConfiguration : IEntityTypeConfiguration<Comment>
         builder.Property(c => c.IpAddress).HasMaxLength(Comment.IpAddressMaxLength);
         builder.Property(c => c.HomePage).HasMaxLength(Comment.HomePageMaxLength);
         builder.Property(c => c.UserAgent).HasMaxLength(Comment.UserAgentMaxLength);
+        builder.Property(c => c.CreatedAt)
+            .HasConversion(
+                v => v,
+                v => DateTime.SpecifyKind(v, DateTimeKind.Utc)
+            );
 
         builder.HasOne<Comment>()
             .WithMany()
