@@ -14,12 +14,22 @@ builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 // Add services to the container.
 
 builder.Services.AddControllers()
-    .AddJsonOptions(o => o.JsonSerializerOptions.Converters.Add(
-        new JsonStringEnumConverter(JsonNamingPolicy.CamelCase)
-    ));
-builder.Services.ConfigureHttpJsonOptions(o => o.SerializerOptions.Converters.Add(
-    new JsonStringEnumConverter(JsonNamingPolicy.CamelCase)
-));
+    .AddJsonOptions(o =>
+        {
+            o.JsonSerializerOptions.Converters.Add(
+                new JsonStringEnumConverter(JsonNamingPolicy.CamelCase)
+            );
+            o.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
+        }
+);
+builder.Services.ConfigureHttpJsonOptions(o =>
+    {
+        o.SerializerOptions.Converters.Add(
+            new JsonStringEnumConverter(JsonNamingPolicy.CamelCase)
+        );
+        o.SerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
+    }
+);
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
