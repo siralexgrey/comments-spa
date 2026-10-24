@@ -2,12 +2,20 @@ using Comments.Application.Comments.Dtos;
 using Comments.Application.Common;
 using Comments.Domain.Entities;
 
+using FluentValidation;
+using FluentValidation.Results;
+
 namespace Comments.Application.Comments;
 
-public class CommentService(ICommentRepository repository) : ICommentService
+public class CommentService(
+    ICommentRepository repository,
+    IValidator<CreateCommentRequest> validator
+) : ICommentService
 {
     private readonly ICommentRepository _repository = repository;
+    private readonly IValidator<CreateCommentRequest> _validator = validator;
     private const int PageSize = 25;
+
     public async Task<PagedResponse<CommentDto>> GetPageAsync(
         int page,
         CommentSortBy sortBy,
@@ -30,11 +38,15 @@ public class CommentService(ICommentRepository repository) : ICommentService
 
     public async Task<CommentDto> CreateAsync(CreateCommentRequest request, CancellationToken cancellationToken)
     {
+        await _validator.ValidateAndThrowAsync(request, cancellationToken);
+
         int? rootId = null;
         if (request.ParentId is not null)
         {
             Comment parent = await _repository.GetByIdAsync(request.ParentId.Value, cancellationToken)
-                ?? throw new InvalidOperationException($"Parent comment {request.ParentId} not found");
+                ?? throw new ValidationException([
+                    new ValidationFailure(nameof(CreateCommentRequest.ParentId), "Parent comment does not exist.")
+                ]);
             rootId = parent.RootId ?? parent.Id;
         }
 
