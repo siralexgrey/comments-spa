@@ -1,0 +1,120 @@
+@baseUrl = http://localhost:5062
+@boundary = ----CommentsBoundary
+
+### GET first page (default: createdAt desc)
+GET {{baseUrl}}/api/comments
+
+### GET sorted by userName asc, page 1
+GET {{baseUrl}}/api/comments?page=1&sortBy=userName&dir=asc
+
+### GET invalid sortBy -> 400
+GET {{baseUrl}}/api/comments?sortBy=abc
+
+### GET page=0 -> 400
+GET {{baseUrl}}/api/comments?page=0
+
+### POST valid root comment -> 201
+POST {{baseUrl}}/api/comments
+Content-Type: multipart/form-data; boundary={{boundary}}
+
+------CommentsBoundary
+Content-Disposition: form-data; name="userName"
+
+Andrii
+------CommentsBoundary
+Content-Disposition: form-data; name="email"
+
+andrii@example.com
+------CommentsBoundary
+Content-Disposition: form-data; name="homePage"
+
+https://example.com
+------CommentsBoundary
+Content-Disposition: form-data; name="text"
+
+Hello from REST Client
+------CommentsBoundary--
+
+### POST reply to comment 1 -> 201
+POST {{baseUrl}}/api/comments
+Content-Type: multipart/form-data; boundary={{boundary}}
+
+------CommentsBoundary
+Content-Disposition: form-data; name="parentId"
+
+1
+------CommentsBoundary
+Content-Disposition: form-data; name="userName"
+
+Andrii
+------CommentsBoundary
+Content-Disposition: form-data; name="email"
+
+andrii@example.com
+------CommentsBoundary
+Content-Disposition: form-data; name="text"
+
+Reply
+------CommentsBoundary--
+
+### POST cyrillic userName -> 400 errors.userName
+POST {{baseUrl}}/api/comments
+Content-Type: multipart/form-data; boundary={{boundary}}
+
+------CommentsBoundary
+Content-Disposition: form-data; name="userName"
+
+Андрій
+------CommentsBoundary
+Content-Disposition: form-data; name="email"
+
+andrii@example.com
+------CommentsBoundary
+Content-Disposition: form-data; name="text"
+
+hi
+------CommentsBoundary--
+
+### POST invalid email + javascript: homePage -> 400 errors.email, errors.homePage
+POST {{baseUrl}}/api/comments
+Content-Type: multipart/form-data; boundary={{boundary}}
+
+------CommentsBoundary
+Content-Disposition: form-data; name="userName"
+
+Andrii
+------CommentsBoundary
+Content-Disposition: form-data; name="email"
+
+not-an-email
+------CommentsBoundary
+Content-Disposition: form-data; name="homePage"
+
+javascript:alert(1)
+------CommentsBoundary
+Content-Disposition: form-data; name="text"
+
+hi
+------CommentsBoundary--
+
+### POST unknown parentId -> 400 errors.parentId
+POST {{baseUrl}}/api/comments
+Content-Type: multipart/form-data; boundary={{boundary}}
+
+------CommentsBoundary
+Content-Disposition: form-data; name="parentId"
+
+9999
+------CommentsBoundary
+Content-Disposition: form-data; name="userName"
+
+Andrii
+------CommentsBoundary
+Content-Disposition: form-data; name="email"
+
+andrii@example.com
+------CommentsBoundary
+Content-Disposition: form-data; name="text"
+
+hi
+------CommentsBoundary--
