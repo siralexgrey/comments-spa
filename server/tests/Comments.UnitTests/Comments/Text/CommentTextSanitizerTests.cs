@@ -6,13 +6,18 @@ public class CommentTextSanitizerTests
 {
     private readonly CommentTextSanitizer _sanitizer = new();
 
-    [Fact]
-    public void Sanitize_PlainText_ReturnsSameText()
+    [Theory]
+    [InlineData("hello", "hello")]
+    [InlineData("<strong>hi</strong>", "<strong>hi</strong>")]
+    [InlineData("a &lt; b", "a &lt; b")]
+    [InlineData("<i>a</i> <i>b</i>", "<i>a</i> <i>b</i>")]
+    [InlineData("a<i/>b", "a<i></i>b")]
+    public void Sanitize_ValidHtml_ReturnsExpectedHtml(string text, string expected)
     {
-        var result = _sanitizer.Sanitize("hello");
+        var result = _sanitizer.Sanitize(text);
 
         Assert.True(result.IsValid);
-        Assert.Equal("hello", result.Html);
+        Assert.Equal(expected, result.Html);
     }
 
     [Fact]
@@ -21,17 +26,6 @@ public class CommentTextSanitizerTests
         var result = _sanitizer.Sanitize("<i>hello");
 
         Assert.False(result.IsValid);
-    }
-
-    [Theory]
-    [InlineData("<strong>hi</strong>")]
-    [InlineData("a &lt; b")]
-    public void Sanitize_ValidHtml_ReturnsSameHtml(string text)
-    {
-        var result = _sanitizer.Sanitize(text);
-
-        Assert.True(result.IsValid);
-        Assert.Equal(text, result.Html);
     }
 
     [Theory]

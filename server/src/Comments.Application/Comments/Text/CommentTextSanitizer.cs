@@ -26,12 +26,17 @@ public sealed class CommentTextSanitizer : ICommentTextSanitizer
                             return SanitizeResult.Failure($"Tag <{reader.Name}> is not allowed");
                         }
                         sb.Append($"<{reader.Name}>");
+                        if (reader.IsEmptyElement)
+                        {
+                            sb.Append($"</{reader.Name}>");
+                        }
                         break;
                     case XmlNodeType.EndElement:
                         if (reader.Depth == 0) continue;
                         sb.Append($"</{reader.Name}>");
                         break;
                     case XmlNodeType.Text:
+                    case XmlNodeType.Whitespace:
                         sb.Append(WebUtility.HtmlEncode(reader.Value));
                         break;
                 }
