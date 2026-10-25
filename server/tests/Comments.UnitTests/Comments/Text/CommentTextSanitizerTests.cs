@@ -53,4 +53,13 @@ public class CommentTextSanitizerTests
 
         Assert.False(result.IsValid);
     }
+
+    [Fact]
+    public void Sanitize_BareAmpersand_ReturnsErrorWithPosition()
+    {
+        var result = _sanitizer.Sanitize("a & b");
+
+        Assert.False(result.IsValid);
+        Assert.Equal("Invalid markup or unclosed tag at line 1, position 4.", result.Error);
+    }
 }

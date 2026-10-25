@@ -10,9 +10,11 @@ public sealed class CommentTextSanitizer : ICommentTextSanitizer
 {
     private static readonly HashSet<string> AllowedTags = ["a", "code", "i", "strong"];
     private static readonly HashSet<string> AllowedLinkAttributes = ["href", "title"];
+    private const string RootOpenTag = "<root>";
+
     public SanitizeResult Sanitize(string text)
     {
-        string xml = $"<root>{text}</root>";
+        string xml = $"{RootOpenTag}{text}</root>";
         var settings = new XmlReaderSettings { DtdProcessing = DtdProcessing.Prohibit };
         try
         {
@@ -63,8 +65,8 @@ public sealed class CommentTextSanitizer : ICommentTextSanitizer
         }
         catch (XmlException ex)
         {
-            return SanitizeResult.Failure(ex.Message);
+            int position = ex.LineNumber == 1 ? ex.LinePosition - RootOpenTag.Length : ex.LinePosition;
+            return SanitizeResult.Failure($"Invalid markup or unclosed tag at line {ex.LineNumber}, position {position}.");
         }
-
     }
 }
