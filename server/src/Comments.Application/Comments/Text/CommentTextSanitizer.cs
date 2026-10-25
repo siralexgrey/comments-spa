@@ -2,6 +2,8 @@ using System.Net;
 using System.Text;
 using System.Xml;
 
+using Comments.Application.Common;
+
 namespace Comments.Application.Comments.Text;
 
 public sealed class CommentTextSanitizer : ICommentTextSanitizer
@@ -33,6 +35,10 @@ public sealed class CommentTextSanitizer : ICommentTextSanitizer
                             if (tagName != "a" || !AllowedLinkAttributes.Contains(reader.Name))
                             {
                                 return SanitizeResult.Failure($"Attribute {reader.Name} is not allowed on <{tagName}>");
+                            }
+                            if (reader.Name == "href" && !UrlRules.IsHttpUrl(reader.Value))
+                            {
+                                return SanitizeResult.Failure("Link href must be an http or https URL");
                             }
                             sb.Append($" {reader.Name}=\"{WebUtility.HtmlEncode(reader.Value)}\"");
                         }

@@ -43,6 +43,10 @@ public class CommentTextSanitizerTests
     [Theory]
     [InlineData("<i title=\"t\">test</i>")]
     [InlineData("<a onclick=\"alert(1)\">test</a>")]
+    [InlineData("<a href=\"javascript:alert(1)\">test</a>")]
+    [InlineData("<a href=\"Javascript:alert(1)\">test</a>")]
+    [InlineData("<a href=\"data:text/html,hi\">test</a>")]
+    [InlineData("<a href=\"/relative\">test</a>")]
     public void Sanitize_InvalidAttribute_ReturnsError(string text)
     {
         var result = _sanitizer.Sanitize(text);
