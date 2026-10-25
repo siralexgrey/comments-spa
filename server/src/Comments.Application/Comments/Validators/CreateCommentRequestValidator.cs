@@ -1,4 +1,5 @@
 using Comments.Application.Comments.Dtos;
+using Comments.Application.Common;
 using Comments.Domain.Entities;
 
 using FluentValidation;
@@ -23,15 +24,11 @@ public class CreateCommentRequestValidator : AbstractValidator<CreateCommentRequ
 
         RuleFor(x => x.HomePage)
             .MaximumLength(Comment.HomePageMaxLength)
-            .Must(BeHttpUrl)
+            .Must(UrlRules.IsHttpUrl)
             .WithMessage("User home page must be valid address starts with http:// or https://")
             .When(x => !string.IsNullOrEmpty(x.HomePage));
 
         RuleFor(x => x.Text)
             .NotEmpty();
     }
-
-    private static bool BeHttpUrl(string? value) =>
-        Uri.TryCreate(value, UriKind.Absolute, out var uri)
-        && (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
 }

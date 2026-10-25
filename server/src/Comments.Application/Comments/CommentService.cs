@@ -1,4 +1,5 @@
 using Comments.Application.Comments.Dtos;
+using Comments.Application.Comments.Text;
 using Comments.Application.Common;
 using Comments.Domain.Entities;
 
@@ -9,11 +10,13 @@ namespace Comments.Application.Comments;
 
 public class CommentService(
     ICommentRepository repository,
-    IValidator<CreateCommentRequest> validator
+    IValidator<CreateCommentRequest> validator,
+    ICommentTextSanitizer sanitizer
 ) : ICommentService
 {
     private readonly ICommentRepository _repository = repository;
     private readonly IValidator<CreateCommentRequest> _validator = validator;
+    private readonly ICommentTextSanitizer _sanitizer = sanitizer;
     private const int PageSize = 25;
 
     public async Task<PagedResponse<CommentDto>> GetPageAsync(
@@ -40,6 +43,7 @@ public class CommentService(
     {
         await _validator.ValidateAndThrowAsync(request, cancellationToken);
 
+        string html = SanitizeOrThrow(request.Text);
         int? rootId = null;
         if (request.ParentId is not null)
         {
@@ -60,7 +64,7 @@ public class CommentService(
             userName: request.UserName,
             email: request.Email,
             homePage: request.HomePage,
-            text: request.Text,
+            text: html,
             createdAt: DateTime.UtcNow,
             ipAddress: request.IpAddress,
             userAgent
@@ -70,6 +74,8 @@ public class CommentService(
         var emptyLookup = Array.Empty<Comment>().ToLookup(c => c.ParentId);
         return ToDto(comment, emptyLookup);
     }
+
+    public string Preview(string text) => SanitizeOrThrow(text);
 
     private static CommentDto ToDto(Comment comment, ILookup<int?, Comment> repliesByParent)
     {
@@ -96,5 +102,19 @@ public class CommentService(
             Width: attachment.Width,
             Height: attachment.Height
         );
+    }
+
+    private string SanitizeOrThrow(string text)
+    {
+        var sanitizeResult = _sanitizer.Sanitize(text);
+
+        if (!sanitizeResult.IsValid)
+        {
+            throw new ValidationException([
+                new ValidationFailure(nameof(CreateCommentRequest.Text), sanitizeResult.Error)
+            ]);
+        }
+
+        return sanitizeResult.Html;
     }
 }
