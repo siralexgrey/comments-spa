@@ -4,6 +4,8 @@ using System.Xml;
 
 using Comments.Application.Common;
 
+using Ganss.Xss;
+
 namespace Comments.Application.Comments.Text;
 
 public sealed class CommentTextSanitizer : ICommentTextSanitizer
@@ -11,6 +13,7 @@ public sealed class CommentTextSanitizer : ICommentTextSanitizer
     private static readonly HashSet<string> AllowedTags = ["a", "code", "i", "strong"];
     private static readonly HashSet<string> AllowedLinkAttributes = ["href", "title"];
     private const string RootOpenTag = "<root>";
+    private static readonly HtmlSanitizer HtmlCleaner = CreateHtmlCleaner();
 
     public SanitizeResult Sanitize(string text)
     {
@@ -61,12 +64,38 @@ public sealed class CommentTextSanitizer : ICommentTextSanitizer
                         break;
                 }
             }
-            return SanitizeResult.Success(sb.ToString());
+            return SanitizeResult.Success(HtmlCleaner.Sanitize(sb.ToString()));
         }
         catch (XmlException ex)
         {
             int position = ex.LineNumber == 1 ? ex.LinePosition - RootOpenTag.Length : ex.LinePosition;
             return SanitizeResult.Failure($"Invalid markup or unclosed tag at line {ex.LineNumber}, position {position}.");
         }
+    }
+
+    private static HtmlSanitizer CreateHtmlCleaner()
+    {
+        var cleaner = new HtmlSanitizer();
+
+        cleaner.AllowedTags.Clear();
+        cleaner.AllowedAttributes.Clear();
+        cleaner.AllowedSchemes.Clear();
+        cleaner.AllowedCssProperties.Clear();
+        cleaner.AllowedAtRules.Clear();
+
+        foreach (var tag in AllowedTags)
+        {
+            cleaner.AllowedTags.Add(tag);
+        }
+
+        foreach (var attribute in AllowedLinkAttributes)
+        {
+            cleaner.AllowedAttributes.Add(attribute);
+        }
+
+        cleaner.AllowedSchemes.Add("http");
+        cleaner.AllowedSchemes.Add("https");
+
+        return cleaner;
     }
 }
