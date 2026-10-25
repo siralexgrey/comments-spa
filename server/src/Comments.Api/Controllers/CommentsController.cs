@@ -49,4 +49,10 @@ public class CommentsController(ICommentService commentService) : ControllerBase
 
         return StatusCode(StatusCodes.Status201Created, created);
     }
+
+    [HttpPost("preview")]
+    public ActionResult<PreviewTextResponse> Preview(PreviewTextRequest request)
+    {
+        return Ok(new PreviewTextResponse(_commentService.Preview(request.Text)));
+    }
 }

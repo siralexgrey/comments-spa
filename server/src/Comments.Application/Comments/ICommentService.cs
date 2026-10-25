@@ -16,4 +16,6 @@ public interface ICommentService
         CreateCommentRequest request,
         CancellationToken cancellationToken
     );
+
+    string Preview(string text);
 }
