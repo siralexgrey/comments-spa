@@ -118,3 +118,47 @@ Content-Disposition: form-data; name="text"
 
 hi
 ------CommentsBoundary--
+
+### POST valid html -> 201
+POST {{baseUrl}}/api/comments
+Content-Type: multipart/form-data; boundary={{boundary}}
+
+------CommentsBoundary
+Content-Disposition: form-data; name="userName"
+
+Andrii
+------CommentsBoundary
+Content-Disposition: form-data; name="email"
+
+andrii@example.com
+------CommentsBoundary
+Content-Disposition: form-data; name="homePage"
+
+https://example.com
+------CommentsBoundary
+Content-Disposition: form-data; name="text"
+
+<strong>Valid html</strong>
+------CommentsBoundary--
+
+### POST invalid html -> 400 error.text
+POST {{baseUrl}}/api/comments
+Content-Type: multipart/form-data; boundary={{boundary}}
+
+------CommentsBoundary
+Content-Disposition: form-data; name="userName"
+
+Andrii
+------CommentsBoundary
+Content-Disposition: form-data; name="email"
+
+andrii@example.com
+------CommentsBoundary
+Content-Disposition: form-data; name="homePage"
+
+https://example.com
+------CommentsBoundary
+Content-Disposition: form-data; name="text"
+
+<b>Invalid html</b>
+------CommentsBoundary--

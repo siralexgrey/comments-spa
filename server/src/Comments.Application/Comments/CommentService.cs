@@ -1,4 +1,5 @@
 using Comments.Application.Comments.Dtos;
+using Comments.Application.Comments.Text;
 using Comments.Application.Common;
 using Comments.Domain.Entities;
 
@@ -9,11 +10,13 @@ namespace Comments.Application.Comments;
 
 public class CommentService(
     ICommentRepository repository,
-    IValidator<CreateCommentRequest> validator
+    IValidator<CreateCommentRequest> validator,
+    ICommentTextSanitizer sanitizer
 ) : ICommentService
 {
     private readonly ICommentRepository _repository = repository;
     private readonly IValidator<CreateCommentRequest> _validator = validator;
+    private readonly ICommentTextSanitizer _sanitizer = sanitizer;
     private const int PageSize = 25;
 
     public async Task<PagedResponse<CommentDto>> GetPageAsync(
@@ -40,6 +43,15 @@ public class CommentService(
     {
         await _validator.ValidateAndThrowAsync(request, cancellationToken);
 
+        var sanitizeResult = _sanitizer.Sanitize(request.Text);
+
+        if (!sanitizeResult.IsValid)
+        {
+            throw new ValidationException([
+                new ValidationFailure(nameof(CreateCommentRequest.Text), sanitizeResult.Error)
+            ]);
+        }
+
         int? rootId = null;
         if (request.ParentId is not null)
         {
@@ -60,7 +72,7 @@ public class CommentService(
             userName: request.UserName,
             email: request.Email,
             homePage: request.HomePage,
-            text: request.Text,
+            text: sanitizeResult.Html,
             createdAt: DateTime.UtcNow,
             ipAddress: request.IpAddress,
             userAgent
