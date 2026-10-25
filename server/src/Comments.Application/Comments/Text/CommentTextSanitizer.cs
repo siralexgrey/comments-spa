@@ -7,6 +7,7 @@ namespace Comments.Application.Comments.Text;
 public sealed class CommentTextSanitizer : ICommentTextSanitizer
 {
     private static readonly HashSet<string> AllowedTags = ["a", "code", "i", "strong"];
+    private static readonly HashSet<string> AllowedLinkAttributes = ["href", "title"];
     public SanitizeResult Sanitize(string text)
     {
         string xml = $"<root>{text}</root>";
@@ -21,14 +22,25 @@ public sealed class CommentTextSanitizer : ICommentTextSanitizer
                 {
                     case XmlNodeType.Element:
                         if (reader.Depth == 0) continue;
-                        if (!AllowedTags.Contains(reader.Name))
+                        string tagName = reader.Name;
+                        if (!AllowedTags.Contains(tagName))
                         {
-                            return SanitizeResult.Failure($"Tag <{reader.Name}> is not allowed");
+                            return SanitizeResult.Failure($"Tag <{tagName}> is not allowed");
                         }
-                        sb.Append($"<{reader.Name}>");
+                        sb.Append($"<{tagName}");
+                        while (reader.MoveToNextAttribute())
+                        {
+                            if (tagName != "a" || !AllowedLinkAttributes.Contains(reader.Name))
+                            {
+                                return SanitizeResult.Failure($"Attribute {reader.Name} is not allowed on <{tagName}>");
+                            }
+                            sb.Append($" {reader.Name}=\"{WebUtility.HtmlEncode(reader.Value)}\"");
+                        }
+                        reader.MoveToElement();
+                        sb.Append('>');
                         if (reader.IsEmptyElement)
                         {
-                            sb.Append($"</{reader.Name}>");
+                            sb.Append($"</{tagName}>");
                         }
                         break;
                     case XmlNodeType.EndElement:
