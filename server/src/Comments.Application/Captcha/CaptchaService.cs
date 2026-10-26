@@ -10,7 +10,7 @@ public class CaptchaService(
 ) : ICaptchaService
 {
     private const int CodeLength = 5;
-    private const string Alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789";
+    private const string Alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz34679";
     private const string Prefix = "captcha";
     private static readonly TimeSpan Ttl = TimeSpan.FromMinutes(5);
     private readonly IMemoryCache _memoryCache = memoryCache;

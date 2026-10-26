@@ -15,7 +15,9 @@ public class CreateCommentRequestValidatorTests
         "https://valid.com",
         "Some <strong>text</strong>",
         "1:1:1:1",
-        "example"
+        "example",
+        Guid.NewGuid(),
+        "aB3kZ"
     );
     private readonly CreateCommentRequestValidator _validator = new();
 

@@ -42,7 +42,9 @@ public class CommentsController(ICommentService commentService) : ControllerBase
             HomePage: form.HomePage,
             Text: form.Text,
             IpAddress: clientIp,
-            UserAgent: userAgent
+            UserAgent: userAgent,
+            CaptchaId: form.CaptchaId,
+            CaptchaCode: form.CaptchaCode
         );
 
         CommentDto created = await _commentService.CreateAsync(request, cancellationToken);

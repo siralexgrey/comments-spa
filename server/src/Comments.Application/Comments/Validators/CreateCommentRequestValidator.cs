@@ -28,6 +28,13 @@ public class CreateCommentRequestValidator : AbstractValidator<CreateCommentRequ
             .WithMessage("User home page must be valid address starts with http:// or https://")
             .When(x => !string.IsNullOrEmpty(x.HomePage));
 
+        RuleFor(x => x.CaptchaCode)
+            .NotEmpty()
+            .Matches("^[a-zA-Z0-9]+$");
+
+        RuleFor(x => x.CaptchaId)
+            .NotEmpty();
+
         RuleFor(x => x.Text)
             .NotEmpty();
     }

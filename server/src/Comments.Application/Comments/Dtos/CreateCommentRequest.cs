@@ -7,5 +7,7 @@ public record CreateCommentRequest(
     string? HomePage,
     string Text,
     string IpAddress,
-    string UserAgent
+    string UserAgent,
+    Guid CaptchaId,
+    string CaptchaCode
 );
