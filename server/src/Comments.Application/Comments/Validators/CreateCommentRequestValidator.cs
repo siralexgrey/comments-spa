@@ -1,3 +1,4 @@
+using Comments.Application.Captcha;
 using Comments.Application.Comments.Dtos;
 using Comments.Application.Common;
 using Comments.Domain.Entities;
@@ -30,7 +31,8 @@ public class CreateCommentRequestValidator : AbstractValidator<CreateCommentRequ
 
         RuleFor(x => x.CaptchaCode)
             .NotEmpty()
-            .Matches("^[a-zA-Z0-9]+$");
+            .Matches("^[a-zA-Z0-9]+$")
+            .Length(CaptchaService.CodeLength);
 
         RuleFor(x => x.CaptchaId)
             .NotEmpty();
