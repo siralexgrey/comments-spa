@@ -5,9 +5,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Magick.NET-Q8-AnyCPU" Version="15.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.13" />
     <!-- Pin: SqlClient 6.1.7 pulls vulnerable 9.0.11 (CVE-2026-70162, CVE-2026-84008). Remove when SqlClient updates. -->
     <PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.13" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Captcha\Fonts\*.ttf" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>
