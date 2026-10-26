@@ -33,7 +33,7 @@
 | text | string | yes | max 5000 chars, valid XHTML, only `<a href title>`, `<code>`, `<i>`, `<strong>` |
 | attachment | File | no | image — JPG/GIF/PNG (if more than 320x240 - server resize proportionally, ≤ 5MB), text — TXT (≤ 100 KB); type check by content not extension |
 | captchaId | string | yes | id from `GET /api/captcha` |
-| captchaCode | string | yes | `^[a-zA-Z0-9]+$`; one-time: invalid after check even if the code was wrong |
+| captchaCode | string | yes | `^[a-zA-Z0-9]+$`; exactly 5 chars; one-time: invalid after check even if the code was wrong |
 
 ### AttachmentDto
 

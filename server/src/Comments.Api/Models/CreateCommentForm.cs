@@ -5,5 +5,7 @@ public record CreateCommentForm(
     string UserName,
     string Email,
     string? HomePage,
-    string Text
+    string Text,
+    Guid CaptchaId,
+    string CaptchaCode
 );

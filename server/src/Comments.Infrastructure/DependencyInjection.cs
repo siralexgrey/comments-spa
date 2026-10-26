@@ -1,4 +1,6 @@
+using Comments.Application.Captcha;
 using Comments.Application.Comments;
+using Comments.Infrastructure.Captcha;
 using Comments.Infrastructure.Persistence;
 using Comments.Infrastructure.Persistence.Repositories;
 
@@ -16,7 +18,10 @@ public static class DependencyInjection
             ?? throw new InvalidOperationException("Connection string 'Default' is not configured");
 
         services.AddDbContext<CommentsDbContext>(options => options.UseSqlServer(connectionString));
+        services.AddMemoryCache();
+
         services.AddScoped<ICommentRepository, CommentRepository>();
+        services.AddSingleton<ICaptchaImageGenerator, CaptchaImageGenerator>();
 
         return services;
     }

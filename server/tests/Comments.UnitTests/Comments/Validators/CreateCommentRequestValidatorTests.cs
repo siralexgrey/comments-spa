@@ -1,3 +1,4 @@
+using Comments.Application.Captcha;
 using Comments.Application.Comments.Dtos;
 using Comments.Application.Comments.Validators;
 using Comments.Domain.Entities;
@@ -15,7 +16,9 @@ public class CreateCommentRequestValidatorTests
         "https://valid.com",
         "Some <strong>text</strong>",
         "1:1:1:1",
-        "example"
+        "example",
+        Guid.NewGuid(),
+        "aB3kZ"
     );
     private readonly CreateCommentRequestValidator _validator = new();
 
@@ -83,5 +86,31 @@ public class CreateCommentRequestValidatorTests
         var result = _validator.TestValidate(ValidRequest with { Text = "" });
 
         result.ShouldHaveValidationErrorFor(x => x.Text);
+    }
+
+    [Fact]
+    public void CaptchaId_Empty_HasError()
+    {
+        var result = _validator.TestValidate(ValidRequest with { CaptchaId = Guid.Empty });
+
+        result.ShouldHaveValidationErrorFor(x => x.CaptchaId);
+    }
+
+    [Fact]
+    public void CaptchaCode_Empty_HasError()
+    {
+        var result = _validator.TestValidate(ValidRequest with { CaptchaCode = "" });
+
+        result.ShouldHaveValidationErrorFor(x => x.CaptchaCode);
+    }
+
+    [Theory]
+    [InlineData("ab-12")]
+    [InlineData("abc")]
+    public void CaptchaCode_InvalidFormat_HasError(string code)
+    {
+        var result = _validator.TestValidate(ValidRequest with { CaptchaCode = code });
+
+        result.ShouldHaveValidationErrorFor(x => x.CaptchaCode);
     }
 }

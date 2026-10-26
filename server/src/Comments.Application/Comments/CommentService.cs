@@ -1,3 +1,4 @@
+using Comments.Application.Captcha;
 using Comments.Application.Comments.Dtos;
 using Comments.Application.Comments.Text;
 using Comments.Application.Common;
@@ -11,12 +12,14 @@ namespace Comments.Application.Comments;
 public class CommentService(
     ICommentRepository repository,
     IValidator<CreateCommentRequest> validator,
-    ICommentTextSanitizer sanitizer
+    ICommentTextSanitizer sanitizer,
+    ICaptchaService captchaService
 ) : ICommentService
 {
     private readonly ICommentRepository _repository = repository;
     private readonly IValidator<CreateCommentRequest> _validator = validator;
     private readonly ICommentTextSanitizer _sanitizer = sanitizer;
+    private readonly ICaptchaService _captchaService = captchaService;
     private const int PageSize = 25;
 
     public async Task<PagedResponse<CommentDto>> GetPageAsync(
@@ -42,6 +45,13 @@ public class CommentService(
     public async Task<CommentDto> CreateAsync(CreateCommentRequest request, CancellationToken cancellationToken)
     {
         await _validator.ValidateAndThrowAsync(request, cancellationToken);
+
+        if (!_captchaService.Validate(request.CaptchaId, request.CaptchaCode))
+        {
+            throw new ValidationException([
+                new ValidationFailure(nameof(CreateCommentRequest.CaptchaCode), "Invalid or expired captcha code")
+            ]);
+        }
 
         string html = SanitizeOrThrow(request.Text);
         int? rootId = null;
