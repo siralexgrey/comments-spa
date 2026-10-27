@@ -8,26 +8,40 @@ public class ImageProcessor : IImageProcessor
 {
     private const int MaxWidth = 320;
     private const int MaxHeight = 240;
+    private const uint MaxSourceSide = 10000;
 
-    public ProcessedImage Process(Stream content, ImageFileFormat format)
+    static ImageProcessor()
     {
-        MagickFormat magickFormat = ToMagickFormat(format);
-        MagickReadSettings  settings = new() { Format = magickFormat };
-        MagickGeometry geometry = new(MaxWidth, MaxHeight) { Greater = true };
+        ResourceLimits.Width = MaxSourceSide;
+        ResourceLimits.Height = MaxSourceSide;
+    }
 
-        using  MagickImageCollection frames = new(content, settings);
-        frames.Coalesce();
-
-        foreach (IMagickImage<byte>? frame in frames)
+    public ProcessedImage? Process(Stream content, ImageFileFormat format)
+    {
+        try
         {
-            frame.Resize(geometry);
-        }
+            MagickFormat magickFormat = ToMagickFormat(format);
+            MagickReadSettings settings = new() { Format = magickFormat };
+            MagickGeometry geometry = new(MaxWidth, MaxHeight) { Greater = true };
 
-        return new ProcessedImage(
-            Content: frames.ToByteArray(magickFormat),
-            Width: (int)frames[0].Width,
-            Height: (int)frames[0].Height
-        );
+            using MagickImageCollection frames = new(content, settings);
+            frames.Coalesce();
+
+            foreach (IMagickImage<byte> frame in frames)
+            {
+                frame.Resize(geometry);
+            }
+
+            return new ProcessedImage(
+                Content: frames.ToByteArray(magickFormat),
+                Width: (int)frames[0].Width,
+                Height: (int)frames[0].Height
+            );
+        }
+        catch (MagickException)
+        {
+            return null;
+        }
     }
 
     private static MagickFormat ToMagickFormat(ImageFileFormat format) => format switch
