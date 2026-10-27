@@ -5,7 +5,13 @@ using Comments.Api.ExceptionHandlers;
 using Comments.Application;
 using Comments.Infrastructure;
 
+using Microsoft.Extensions.FileProviders;
+
 var builder = WebApplication.CreateBuilder(args);
+
+var uploadsPath = builder.Configuration["Uploads:Path"]
+    ?? throw new InvalidOperationException("'Uploads:Path' is not configured");
+var uploadsAbsolutePath = Path.GetFullPath(uploadsPath);
 
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<ValidationExceptionHandler>();
@@ -50,6 +56,13 @@ if (app.Environment.IsDevelopment())
         options.RoutePrefix = string.Empty;
     });
 }
+
+Directory.CreateDirectory(uploadsAbsolutePath);
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(uploadsAbsolutePath),
+    RequestPath = "/uploads",
+});
 
 app.UseHttpsRedirection();
 
