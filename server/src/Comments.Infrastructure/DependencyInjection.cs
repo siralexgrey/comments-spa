@@ -27,6 +27,7 @@ public static class DependencyInjection
 
         services.AddScoped<ICommentRepository, CommentRepository>();
         services.AddSingleton<ICaptchaImageGenerator, CaptchaImageGenerator>();
+        services.AddSingleton<IImageProcessor, ImageProcessor>();
         services.AddSingleton<IFileStorage>(_ => new LocalFileStorage(uploadsAbsolutePath));
 
         return services;

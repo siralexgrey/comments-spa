@@ -1,3 +1,4 @@
+using Comments.Application.Attachments;
 using Comments.Application.Captcha;
 using Comments.Application.Comments;
 using Comments.Application.Comments.Text;
@@ -16,6 +17,7 @@ public static class DependencyInjection
         services.AddScoped<ICommentService, CommentService>();
         services.AddSingleton<ICommentTextSanitizer, CommentTextSanitizer>();
         services.AddSingleton<ICaptchaService, CaptchaService>();
+        services.AddSingleton<AttachmentService>();
         services.AddValidatorsFromAssemblyContaining<CreateCommentRequestValidator>();
 
         return services;

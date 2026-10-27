@@ -1,3 +1,4 @@
+using Comments.Application.Attachments;
 using Comments.Application.Captcha;
 using Comments.Application.Comments.Dtos;
 using Comments.Application.Comments.Text;
@@ -13,13 +14,15 @@ public class CommentService(
     ICommentRepository repository,
     IValidator<CreateCommentRequest> validator,
     ICommentTextSanitizer sanitizer,
-    ICaptchaService captchaService
+    ICaptchaService captchaService,
+    AttachmentService attachmentService
 ) : ICommentService
 {
     private readonly ICommentRepository _repository = repository;
     private readonly IValidator<CreateCommentRequest> _validator = validator;
     private readonly ICommentTextSanitizer _sanitizer = sanitizer;
     private readonly ICaptchaService _captchaService = captchaService;
+    private readonly AttachmentService _attachmentService = attachmentService;
     private const int PageSize = 25;
 
     public async Task<PagedResponse<CommentDto>> GetPageAsync(
@@ -79,6 +82,13 @@ public class CommentService(
             ipAddress: request.IpAddress,
             userAgent
         );
+
+        if (request.Attachment is not null)
+        {
+            var attachment = await _attachmentService.SaveAsync(request.Attachment, cancellationToken);
+            comment.AttachFile(attachment);
+        }
+
         await _repository.AddAsync(comment, cancellationToken);
 
         var emptyLookup = Array.Empty<Comment>().ToLookup(c => c.ParentId);
