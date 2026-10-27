@@ -12,6 +12,7 @@ public class AttachmentService(
     IFileStorage storage
 )
 {
+    private const int MaxImageSizeBytes = 5 * 1024 * 1024;
     private readonly IImageProcessor _processor = processor;
     private readonly IFileStorage _storage = storage;
 
@@ -42,6 +43,7 @@ public class AttachmentService(
         CancellationToken cancellationToken
     )
     {
+        if (content.Length > MaxImageSizeBytes) throw InvalidAttachment("Image must not be larger than 5 MB.");
         (string extension, string contentType) = ToFileInfo(format);
         using var input = new MemoryStream(content);
         var image = _processor.Process(input, format) ?? throw InvalidAttachment("Image file is corrupted.");

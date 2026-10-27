@@ -28,6 +28,7 @@ public class CommentsController(ICommentService commentService) : ControllerBase
     }
 
     [HttpPost]
+    [RequestSizeLimit(6 * 1024 * 1024)]
     public async Task<ActionResult<CommentDto>> Create(
         [FromForm] CreateCommentForm form,
         CancellationToken cancellationToken = default
