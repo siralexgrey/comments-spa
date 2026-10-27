@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 
 using Comments.Api.Models;
+using Comments.Application.Attachments;
 using Comments.Application.Comments;
 using Comments.Application.Comments.Dtos;
 using Comments.Application.Common;
@@ -35,12 +36,19 @@ public class CommentsController(ICommentService commentService) : ControllerBase
         string clientIp = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
         string userAgent = Request.Headers.UserAgent.ToString();
 
+        FileUpload? attachment = form.Attachment is { } file
+            ? new FileUpload(file.OpenReadStream(), file.FileName)
+            : null;
+
+        await using Stream? _ = attachment?.Content;
+
         CreateCommentRequest request = new(
             ParentId: form.ParentId,
             UserName: form.UserName,
             Email: form.Email,
             HomePage: form.HomePage,
             Text: form.Text,
+            Attachment: attachment,
             IpAddress: clientIp,
             UserAgent: userAgent,
             CaptchaId: form.CaptchaId,

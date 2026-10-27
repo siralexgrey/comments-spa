@@ -6,6 +6,7 @@ public record CreateCommentForm(
     string Email,
     string? HomePage,
     string Text,
+    IFormFile? Attachment,
     Guid CaptchaId,
     string CaptchaCode
 );

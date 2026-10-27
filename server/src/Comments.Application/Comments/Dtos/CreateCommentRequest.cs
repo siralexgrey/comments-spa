@@ -1,3 +1,5 @@
+using Comments.Application.Attachments;
+
 namespace Comments.Application.Comments.Dtos;
 
 public record CreateCommentRequest(
@@ -6,6 +8,7 @@ public record CreateCommentRequest(
     string Email,
     string? HomePage,
     string Text,
+    FileUpload? Attachment,
     string IpAddress,
     string UserAgent,
     Guid CaptchaId,

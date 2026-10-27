@@ -10,15 +10,16 @@ namespace Comments.UnitTests.Comments.Validators;
 public class CreateCommentRequestValidatorTests
 {
     private static readonly CreateCommentRequest ValidRequest = new(
-        null,
-        "ValidName",
-        "validname@validmail.com",
-        "https://valid.com",
-        "Some <strong>text</strong>",
-        "1:1:1:1",
-        "example",
-        Guid.NewGuid(),
-        "aB3kZ"
+        ParentId: null,
+        UserName: "ValidName",
+        Email: "validname@validmail.com",
+        HomePage: "https://valid.com",
+        Text: "Some <strong>text</strong>",
+        Attachment: null,
+        IpAddress: "1:1:1:1",
+        UserAgent: "example",
+        CaptchaId: Guid.NewGuid(),
+        CaptchaCode: "aB3kZ"
     );
     private readonly CreateCommentRequestValidator _validator = new();
 
