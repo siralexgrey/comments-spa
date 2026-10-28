@@ -44,6 +44,8 @@ builder.Services.AddApplication();
 
 var app = builder.Build();
 
+await app.Services.ApplyMigrationsAsync();
+
 app.UseExceptionHandler();
 
 // Configure the HTTP request pipeline.
