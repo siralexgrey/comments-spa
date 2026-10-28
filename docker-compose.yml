@@ -16,5 +16,28 @@ services:
       retries: 10
       start_period: 20s
 
+  api:
+    build: ./server
+    environment:
+      ConnectionStrings__Default: "Server=db;Database=Comments;User Id=sa;Password=${DB_PASSWORD};TrustServerCertificate=True"
+      Uploads__Path: /app/uploads
+      # Behind nginx: take the client IP from X-Forwarded-For instead of the nginx container IP.
+      ASPNETCORE_FORWARDEDHEADERS_ENABLED: "true"
+    volumes:
+      - uploads-data:/app/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  client:
+    build: ./client
+    ports:
+      - "8080:80"
+    depends_on:
+      - api
+    restart: unless-stopped
+
 volumes:
   db-data:
+  uploads-data:
