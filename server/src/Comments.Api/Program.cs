@@ -65,11 +65,15 @@ app.UseStaticFiles(new StaticFileOptions
     FileProvider = new PhysicalFileProvider(uploadsAbsolutePath),
     RequestPath = "/uploads",
 });
+app.UseStaticFiles();
 
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapFallbackToFile("index.html");
+app.MapFallback("/api/{**path}", () => Results.NotFound());
 
 app.Run();
