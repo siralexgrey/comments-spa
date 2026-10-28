@@ -33,10 +33,11 @@ public class CommentService(
     )
     {
         int totalCount = await _repository.CountRootsAsync(cancellationToken);
-        int skip = (page - 1) * PageSize;
+        long skip = (long)(page - 1) * PageSize;
+        if (skip >= totalCount) return new PagedResponse<CommentDto>([], page, PageSize, totalCount);
 
         IReadOnlyList<Comment> rootCommentsList = await _repository.GetRootPageAsync(
-            sortBy, direction, skip, PageSize, cancellationToken
+            sortBy, direction, (int)skip, PageSize, cancellationToken
         );
         if (rootCommentsList.Count == 0) return new PagedResponse<CommentDto>([], page, PageSize, totalCount);
         IReadOnlyList<int> rootIds = [.. rootCommentsList.Select(r => r.Id)];
