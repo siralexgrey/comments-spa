@@ -1,6 +1,6 @@
 <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-2">
-  <div class="grid gap-x-4 sm:grid-cols-3">
-    <mat-form-field class="w-full">
+  <div class="grid gap-x-4 sm:grid-cols-3 items-start">
+    <mat-form-field class="w-full" subscriptSizing="dynamic">
       <mat-label>User Name</mat-label>
       <input matInput formControlName="userName" />
       @if (form.controls.userName.hasError('required')) {
@@ -10,10 +10,10 @@
         <mat-error>User name max length is 50 characters</mat-error>
       }
       @if (form.controls.userName.hasError('pattern')) {
-        <mat-error>User name should only contain latin letters and numbers</mat-error>
+        <mat-error>Only latin letters and numbers</mat-error>
       }
     </mat-form-field>
-    <mat-form-field class="w-full">
+    <mat-form-field class="w-full" subscriptSizing="dynamic">
       <mat-label>Email</mat-label>
       <input matInput formControlName="email" />
       @if (form.controls.email.hasError('required')) {
@@ -26,7 +26,7 @@
         <mat-error>Email max length is 254 characters</mat-error>
       }
     </mat-form-field>
-    <mat-form-field class="w-full">
+    <mat-form-field class="w-full" subscriptSizing="dynamic">
       <mat-label>Home page</mat-label>
       <input matInput formControlName="homePage" />
       @if (form.controls.homePage.hasError('maxlength')) {
@@ -43,7 +43,7 @@
     <div class="field-errors">
       @if (errorStateMatcher.isErrorState(form.controls.text, formDir())) {
         @if (form.controls.text.hasError('required')) {
-          <mat-error>Comment text is Required</mat-error>
+          <mat-error>Comment text is required</mat-error>
         }
         @if (form.controls.text.hasError('invalidXhtml')) {
           <mat-error>Invalid XHTML</mat-error>
