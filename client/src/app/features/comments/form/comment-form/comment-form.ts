@@ -13,9 +13,10 @@ import { CommentsStore } from '../../data-access/comments-store';
 import { MarkupEditor } from '../markup-editor/markup-editor';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { CommentsApi } from '@core/api/comments-api';
-import { map } from 'rxjs';
+import { finalize, map } from 'rxjs';
 import { PreviewResponse } from '@core/models/preview.models';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { attachmentValidator } from '../validators/attachment.validator';
 import { DecimalPipe } from '@angular/common';
 import { ProblemDetails } from '@core/models/api.models';
@@ -31,6 +32,7 @@ import { HttpErrorResponse } from '@angular/common/http';
     MatIconModule,
     MarkupEditor,
     MatProgressBarModule,
+    MatProgressSpinnerModule,
     DecimalPipe
   ],
   selector: 'app-comment-form',
@@ -45,6 +47,7 @@ export class CommentForm {
 
   protected readonly errorStateMatcher = inject(ErrorStateMatcher);
   protected readonly formErrors = signal<string[]>([]);
+  protected readonly isSubmitting = signal(false);
 
   protected readonly formDir = viewChild.required(FormGroupDirective);
   private readonly fileInput = viewChild.required<ElementRef<HTMLInputElement>>('fileInput')
@@ -73,6 +76,9 @@ export class CommentForm {
   });
 
   protected submit() {
+    if (this.isSubmitting()) {
+      return;
+    }
     this.formErrors.set([]);
     const captcha = this.captcha.value();
     if (!captcha) {
@@ -101,7 +107,9 @@ export class CommentForm {
     if (formValue.attachment) {
       createCommentDto.attachment = formValue.attachment;
     }
+    this.isSubmitting.set(true);
     this.store.createComment(createCommentDto)
+      .pipe(finalize(() => this.isSubmitting.set(false)))
       .subscribe({
         next: (value) => {
           this.formDir().resetForm();

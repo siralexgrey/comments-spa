@@ -109,7 +109,10 @@
   </div>
   <div class="flex justify-end gap-2">
     <button matButton="outlined" type="button" (click)="showPreview()">Preview</button>
-    <button matButton="filled" [disabled]="!captcha.hasValue()">Send</button>
+    <button matButton="filled" [disabled]="!captcha.hasValue()" [showProgress]="isSubmitting()">
+      Send
+      <mat-progress-spinner progressIndicator mode="indeterminate" diameter="18" />
+    </button>
   </div>
 </form>
 @if(preview.isLoading()) {
