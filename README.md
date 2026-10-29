@@ -23,7 +23,41 @@ A single-page application for threaded comments: root comments in a sortable, pa
 | Frontend | Angular 22, Angular Material, Tailwind CSS |
 | Infrastructure | Docker Compose (SQL Server, API, nginx) |
 
-The backend follows a layered layout: `Comments.Domain` → `Comments.Application` → `Comments.Infrastructure` / `Comments.Api`. The REST API is described in [docs/api-contract.md](docs/api-contract.md).
+The backend follows a layered layout: `Comments.Domain` → `Comments.Application` → `Comments.Infrastructure` / `Comments.Api`. The REST API is described in [docs/api-contract.md](docs/api-contract.md). The database schema for MySQL Workbench is in [docs/schema.mwb](docs/schema.mwb), generated from [docs/schema.sql](docs/schema.sql).
+
+### Database schema
+
+```mermaid
+erDiagram
+    Comments |o--o{ Comments : "ParentId (reply to)"
+    Comments |o--o{ Comments : "RootId (thread)"
+    Comments ||--o| Attachments : "CommentId"
+
+    Comments {
+        int Id PK
+        int ParentId FK "NULL for a root comment"
+        int RootId FK "root of the thread"
+        nvarchar UserName "max 50, latin letters and digits"
+        nvarchar Email "max 254"
+        nvarchar HomePage "max 2048, optional"
+        nvarchar Text "sanitized XHTML: a, code, i, strong"
+        nvarchar IpAddress "max 45"
+        nvarchar UserAgent "max 512"
+        datetime2 CreatedAt "UTC"
+    }
+
+    Attachments {
+        int Id PK
+        int CommentId FK, UK
+        int Type "1 = Image, 2 = Text"
+        nvarchar OriginalName "max 255"
+        nvarchar StoredName "GUID + extension"
+        nvarchar ContentType "max 50"
+        int SizeBytes
+        int Width "images only, max 320"
+        int Height "images only, max 240"
+    }
+```
 
 ## Run with Docker
 
