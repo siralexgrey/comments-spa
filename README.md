@@ -4,6 +4,8 @@ A single-page application for threaded comments: root comments in a sortable, pa
 
 **Live demo:** https://comments-spa.runasp.net
 
+**Demo video:** https://youtu.be/QYS-U7-KZ3w
+
 ## Features
 
 - Form with client- and server-side validation: user name (Latin letters and digits), e-mail, optional home page URL, CAPTCHA, text.
@@ -76,3 +78,5 @@ Tests: `dotnet test` in `server/`, `npx ng test` in `client/`.
 ## Deployment
 
 The demo runs on MonsterASP.NET (Windows/IIS, SQL Server). `deploy/deploy.sh` builds the Angular app into the API's `wwwroot`, publishes the API for `win-x86` and uploads it over SFTP using `app_offline.htm` to stop the running app. The production connection string lives only on the server in `appsettings.Production.json`.
+
+For client-only changes, `deploy/deploy-client.sh` builds the Angular app and uploads it to `wwwroot` without stopping the API.
