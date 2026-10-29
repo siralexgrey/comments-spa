@@ -1,0 +1,23 @@
+<h2 mat-dialog-title>Insert link</h2>
+<mat-dialog-content>
+  <form [formGroup]="form">
+    <mat-form-field>
+      <mat-label>Link</mat-label>
+      <input matInput type="text" formControlName="href" />
+      @if (form.controls.href.hasError('required')) {
+        <mat-error>Href param is required</mat-error>
+      }
+      @if (form.controls.href.hasError('httpUrl')) {
+        <mat-error>Href is invalid</mat-error>
+      }
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Title</mat-label>
+      <input matInput type="text" formControlName="title" />
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button matButton mat-dialog-close>Cancel</button>
+  <button matButton [disabled]="form.invalid" (click)="confirm()">Confirm</button>
+</mat-dialog-actions>

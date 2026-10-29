@@ -1,0 +1,29 @@
+<div class="editor">
+  <div class="flex items-center gap-1 border-b border-(--mat-sys-outline-variant) px-2 py-1">
+    <span class="mr-2 text-sm text-(--mat-sys-on-surface-variant)" aria-hidden="true">Text*</span>
+    <button type="button" aria-label="Italic" matIconButton [disabled]="disabled()" (click)="wrap('i')">
+      <mat-icon>format_italic</mat-icon>
+    </button>
+    <button type="button" aria-label="Bold" matIconButton [disabled]="disabled()" (click)="wrap('strong')">
+      <mat-icon>format_bold</mat-icon>
+    </button>
+    <button type="button" aria-label="Code" matIconButton [disabled]="disabled()" (click)="wrap('code')">
+      <mat-icon>code_xml</mat-icon>
+    </button>
+    <button type="button" aria-label="Link" matIconButton [disabled]="disabled()" (click)="insertLink()">
+      <mat-icon>link</mat-icon>
+    </button>
+  </div>
+  <label>
+    <span class="sr-only">Text</span>
+    <textarea
+      #textarea
+      rows="5"
+      class="block w-full resize-y bg-transparent p-3 outline-none"
+      [value]="value()"
+      (input)="handleInput(textarea.value)"
+      (blur)="onTouched()"
+      [disabled]="disabled()"
+    ></textarea>
+  </label>
+</div>

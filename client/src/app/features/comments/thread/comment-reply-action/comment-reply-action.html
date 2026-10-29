@@ -1,0 +1,14 @@
+<button
+  type="button"
+  class="min-h-6 text-sm text-(--mat-sys-primary) hover:underline cursor-pointer"
+  (click)="toggle()"
+>
+  {{ isActive() ? 'Cancel' : 'Reply' }}
+</button>
+@if (isActive()) {
+  <app-comment-form
+    class="order-1 basis-full rounded-xl bg-(--mat-sys-surface-container-low) p-4"
+    [parentId]="commentId()"
+    (submitted)="store.setReplyingToId(null)"
+  />
+}

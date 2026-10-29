@@ -1,0 +1,57 @@
+:host {
+  display: block;
+}
+
+.mat-mdc-table {
+  background: transparent;
+}
+
+// Root comment header: rounded bar like in the task mockup.
+.comment-row td {
+  border-bottom: none;
+  background: var(--mat-sys-surface-container);
+}
+
+// Cover the sub-pixel seam between cells with fractional widths.
+.comment-row td:not(:last-child) {
+  box-shadow: 1px 0 0 var(--mat-sys-surface-container);
+}
+
+.comment-row td:first-child {
+  border-radius: 8px 0 0 8px;
+}
+
+.comment-row td:last-child {
+  border-radius: 0 8px 8px 0;
+}
+
+.secondary {
+  color: var(--mat-sys-on-surface-variant);
+}
+
+// The header bar already separates comments, no extra line needed.
+.detail-cell {
+  padding-top: 12px;
+  padding-bottom: 28px;
+  border-bottom: none;
+}
+
+.cdk-column-createdAt {
+  white-space: nowrap;
+}
+
+// On phones the email column doesn't fit; it stays visible in replies and on wider screens.
+@media (max-width: 639px) {
+  .cdk-column-email {
+    display: none;
+  }
+
+  .mat-mdc-cell,
+  .mat-mdc-header-cell {
+    padding-inline: 8px;
+  }
+}
+
+.mat-mdc-paginator {
+  background: transparent;
+}

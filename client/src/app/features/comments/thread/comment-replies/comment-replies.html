@@ -1,0 +1,48 @@
+@if (replies().length) {
+  <button
+    type="button"
+    class="min-h-6 text-sm text-(--mat-sys-primary) hover:underline cursor-pointer"
+    [attr.aria-expanded]="expanded()"
+    (click)="expanded.update(v => !v)"
+  >
+    {{
+      expanded()
+        ? 'Hide replies'
+        : 'Show ' + (replies().length | i18nPlural: replyMap)
+    }}
+  </button>
+}
+@if (expanded()) {
+  <div class="thread order-2 basis-full ml-4 pl-4 sm:ml-6" [attr.data-rail]="(depth() - 1) % 4 + 1">
+    @for (reply of replies(); track reply.id) {
+      <div>
+        <div
+          class="flex flex-wrap items-center gap-3 rounded-lg px-3 py-2 bg-(--mat-sys-surface-container)"
+        >
+          <app-comment-author
+            [userName]="reply.userName"
+            [homePage]="reply.homePage"
+          />
+          <span
+            class="text-sm text-(--mat-sys-on-surface-variant)"
+          >
+            {{ reply.email }}
+          </span>
+          <span
+            class="text-sm text-(--mat-sys-on-surface-variant)"
+          >
+            {{ reply.createdAt | date: dateFormat }}
+          </span>
+        </div>
+        <div [innerHTML]="reply.text" class="comment-text mt-2 px-1"></div>
+        @if (reply.attachment; as attachment) {
+          <app-comment-attachment class="mt-3 block" [attachment]="attachment" />
+        }
+      </div>
+      <div class="thread-actions mb-3">
+        <app-comment-reply-action [commentId]="reply.id" />
+        <app-comment-replies [replies]="reply.replies" [depth]="depth() + 1" />
+      </div>
+    }
+  </div>
+}
